@@ -11,24 +11,89 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap">
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- https://codepen.io/Pierre_Hamel/pen/NWqwOp -->
+    <link rel="stylesheet" href="css/slider.css">
+    <link rel="stylesheet" href="https://demos.jquerymobile.com/1.4.2/css/themes/default/jquery.mobile-1.4.2.min.css">
+    <script src="https://demos.jquerymobile.com/1.4.2/js/jquery.js"></script>
+	<script src="https://demos.jquerymobile.com/1.4.2/js/jquery.mobile-1.4.2.min.js"></script>
+    <script type="text/javascript">
+        $('input').popup();
+    </script>
 </head>
 <body>
     <div class="app">
-        <section class="map_area">
+        <header class="app__header header">
+            <h1 class="header__heading">
+                Bike Accidents in Brno
+            </h1>
+        </header>
+
+        <section class="app__map map_area">
             <div id="map"></div>
-            <div id="time_control"></div>
+            <form id="time_slider">
+                <div data-role="rangeslider">
+                    <label for="range-1a">Year:</label>
+                    <input type="range" name="range-1a" id="range-1a" min="0" max="100" value="40" data-popup-enabled="true" data-show-value="true">
+                    <label for="range-1b">Rangeslider:</label>
+                    <input type="range" name="range-1b" id="range-1b" min="0" max="100" value="80" data-popup-enabled="true" data-show-value="true">
+                </div>
+            </form>
         </section>
 
-        <main class="description">
-            <header class="descrition__header">Something about bike roads</header>
+        <main class="app__data description">
+            <h1 class="description__heading">
+                Lol some description
+            </h1>
             <div id="filters"></div>
             <div class="descpription__data text">
-                <h1 class="text__header">Sumavska ulice</h1>
-                <div class="text__entry"></div>
-                <div class="text__entry"></div>
-                <div class="text__entry"></div>
-                <div class="text__entry"></div>
-                <div class="text__entry"></div>
+                <h1 class="text__header">Selected Bike Road</h1>
+                <div class="text__about">
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                    Temporibus, natus beatae distinctio possimus earum ea iusto
+                    pariatur rem, ut iure corporis sint nemo ullam obcaecati
+                    debitis rerum odio quas sequi!
+                </div>
+
+                <div class="text__entry age">
+                    <div class="age__chart chart"></div>
+                    <div class="age__about">
+                        Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                        Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
+                        hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
+                        Commodi fugiat porro amet tenetur.
+                    </div>
+                </div>
+
+                <div class="text__entry sex">
+                    <div class="sex__chart chart"></div>
+                    <div class="sex__about">
+                        Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                        Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
+                        hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
+                        Commodi fugiat porro amet tenetur.
+                    </div>
+                </div>
+
+                <div class="text__entry age">
+                    <div class="age__chart chart"></div>
+                    <div class="age__about">
+                        Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                        Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
+                        hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
+                        Commodi fugiat porro amet tenetur.
+                    </div>
+                </div>
+
+                <div class="text__entry sex">
+                    <div class="sex__chart chart"></div>
+                    <div class="sex__about">
+                        Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                        Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
+                        hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
+                        Commodi fugiat porro amet tenetur.
+                    </div>
+                </div>
             </div>
         </main>
     </div>
