@@ -1,7 +1,7 @@
 /* https://codepen.io/Pierre_Hamel/pen/NWqwOp */
 
 form  {
-    margin: 60px 0 0 0 !important;
+    margin: 0px 0 0 0 !important;
  }
 
 .ui-slider .ui-btn-inner {
@@ -10,8 +10,8 @@ form  {
 
 .ui-slider-popup {
     position: absolute !important;
-    width: 64px;
-    height: 64px;
+    width: 32px;
+    height: 32px;
     text-align: center;
     font-size: 36px;
     padding-top: 14px;

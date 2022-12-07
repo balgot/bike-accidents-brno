@@ -23,7 +23,7 @@ d3.json(BIKE_ACCIDENTS_URL).get((err, data) => {
     else {
         console.log(data);
         const d = data.features.filter((val) => val[ROAD_GEO]);  // only those with geometry
-        data_accidents = d.slice(0, 10);
+        data_accidents = d;//.slice(0, 10);
         /*data_accidents = {
             ACC_GEO: d.map((e) => e[ACC_GEO].paths),
             ACC_TIMESTAMP: d.map((e) => e.attributes[ACC_TIMESTAMP]),
@@ -40,16 +40,36 @@ d3.json(BIKE_ACCIDENTS_URL).get((err, data) => {
     }
 });
 
-const draw_accidents = () => {
-    data_accidents.forEach((e) => {
+var xx;
+const draw_accidents = (stddev=0.7) => {
+    const coords = data_accidents.map((e) => [e[ACC_GEO].y, e[ACC_GEO].x]);
+    console.log("Coords:", coords);
+    const clusters = geocluster(coords, stddev);
+    clusters.forEach(cluster => {
+        L.circle(cluster.centroid, {
+                color: 'blue',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: 3 * cluster.elements.length
+            }).addTo(map);
+    });
+
+    /*data_accidents.forEach((e) => {
         const {x, y} = e[ACC_GEO];
         const loc = [y, x];
         console.log(loc);
 
         L.marker(loc)
          .on("mouseover", () => console.log(e))
+         .on("click", () => {
+            const target = d3.select("#selected");
+            console.log(target);
+            target.nodes()[0].innerHTML = `<code>${JSON.stringify(e.attributes)}</code>`;
+            console.log(e);
+            xx = target.nodes()[0];
+         })
          .addTo(map);
-    });
+    });*/
 };
 
 // TODO: cluster <or> show accidents only after the road is selected
