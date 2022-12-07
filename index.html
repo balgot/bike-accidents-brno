@@ -7,19 +7,47 @@
 
     <title>Bike Accidents in Brno</title>
 
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="public/assets/pics/favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="public/css/style.css">
+
+    <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+
+    <!-- LEAFLET -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
 
     <!-- https://codepen.io/Pierre_Hamel/pen/NWqwOp -->
-    <link rel="stylesheet" href="css/slider.css">
     <link rel="stylesheet" href="https://demos.jquerymobile.com/1.4.2/css/themes/default/jquery.mobile-1.4.2.min.css">
+    <link rel="stylesheet" href="public/css/slider.css">
     <script src="https://demos.jquerymobile.com/1.4.2/js/jquery.js"></script>
 	<script src="https://demos.jquerymobile.com/1.4.2/js/jquery.mobile-1.4.2.min.js"></script>
     <script type="text/javascript">
         $('input').popup();
     </script>
+
+    <style>
+        /* ??? */
+        g {
+            width: 100%;
+            height: 100%;
+        }
+
+        path.slice{
+            stroke-width:2px;
+        }
+
+        polyline{
+            opacity: .3;
+            stroke: black;
+            stroke-width: 2px;
+            fill: none;
+        }
+    </style>
+
+
 </head>
 <body>
     <div class="app">
@@ -27,7 +55,15 @@
             <h1 class="header__heading">
                 Bike Accidents in Brno
             </h1>
+            <span class="app__about modal__button">OPEN SESAME</span>
         </header>
+
+        <article class="app__info modal">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque
+            impedit iure, sunt eum quod molestiae facere accusantium, ipsum
+            officiis fugiat porro? Repellat animi, assumenda tenetur ut aliquid
+            excepturi adipisci earum.
+        </article>
 
         <section class="app__map map_area">
             <div id="map"></div>
@@ -56,7 +92,7 @@
                 </div>
 
                 <div class="text__entry age">
-                    <div class="age__chart chart"></div>
+                    <div id="piechart" class="age__chart chart"></div>
                     <div class="age__about">
                         Lorem ipsum, dolor sit amet consectetur adipisicing elit.
                         Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
@@ -97,5 +133,10 @@
             </div>
         </main>
     </div>
+
+    <script src="public/scripts/bike_accidents.js"></script>
+    <script src="public/scripts/data_roads_get.js"></script>
+    <script src="public/scripts/pie_chart.js"></script>
+    <script src="public/scripts/data_accidents_get.js"></script>
 </body>
 </html>
