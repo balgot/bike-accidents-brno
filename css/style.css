@@ -1,70 +1,156 @@
-/* ctrl + shift + p > sort css by importance **/
 :root {
-    --font-family: 'Roboto', sans-serif;
+    --font-family: "Roboto Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
     --black: black;
     --grey: #C4C4C4;
     --light-grey: #E5E5EC;
     --light-green: #74ff87;
     --green: rgb(4, 97, 66);
-    --red: #ED2460;
+    --red: #ff5e8e;
     --white: white;
     --color-font-primary: var(--black);
-    --color-font-secondary: var(--black);
+    /* --color-font-secondary: var(--black); */
     --color-primary: var(--white);
     --color-secondary: var(--light-green);
     --color-alert-font: var(--white);
-    --color-alert: var(--green);
+    --color-alert: var(--red);
     --color-bg-terciary: var(--light-grey);
     --font-sz-header: 1.75em;
+    --header-height: minmax(3.5em, 3.5em);
+    --color-bg-secondary: rgb(43, 43, 43);
+    --color-font-secondary: rgb(4, 214, 144);
+    --size-font-big: 2em;
+}
+
+* {
+    margin: 0;
+    padding: 0;
 }
 
 html,
 body {
-    margin: 0;
-    padding: 0;
     font-family: var(--font-family);
+    cursor: default;
 }
 
 .app {
-    display: grid;
-    grid-template:
-        "header header" minmax(min-content, 8em)
-        "map data" 100% / 1.5fr 1fr;
+    display: flex;
+    flex-direction: column;
     width: 100vw;
     height: 100vh;
     overflow: hidden;
 }
 
+
+
+/*******************************************************************************
+ *                          I N S T R U C T I O N S
+ ******************************************************************************/
+
+ .instructions {
+    display: inline-block;
+    border: 2px solid var(--color-alert);
+    color: var(--color-font-primary);
+    padding: 0;
+ }
+
+ .instructions__note {
+    text-transform: uppercase;
+    font-weight: bolder;
+    display: block;
+    background-color: var(--color-alert);
+    color: var(--color-alert-font);
+    margin-bottom: .3em;
+    font-size: larger;
+    padding: .1em .5em;
+    font-style: normal;
+ }
+
+ .instructions__text {
+     padding: 1em;
+ }
+
 /*******************************************************************************
  *                            H E A D E R
  ******************************************************************************/
-.app__header {
-    grid-area: header;
-    width: 100%;
-}
 
 .header {
-    position: sticky;
-    background-color: var(--light-grey);
-    font: var(--black);
-    height: 5em;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: var(--header-height);
+    justify-content: space-between;
+    background-color: var(--color-bg-secondary);
     padding: 0.3em;
 }
 
 .header__heading {
-    text-align: center;
-    margin: 0;
-    padding: 0;
-    font-size: 2em;
+    /* need to center the text within... */
+    display: flex;
+    align-items: center;
+    margin-left: 5%;
+    color: var(--color-font-secondary);
+    font-size: var(--size-font-big);
+    font-weight: normal;
 }
+
+.modal__button {
+    justify-self: flex-end;
+    transition: all ease-in-out 0.2s;
+    border: 1px solid var(--color-font-secondary);
+    border-radius: 9px;
+    cursor: pointer;
+    background-color: var(--color-bg-secondary);
+    padding: .1em 1.2em;
+    color: var(--color-font-secondary);
+}
+
+.modal__button:hover {
+    background-color: var(--color-font-secondary);
+    color: var(--color-bg-secondary);
+}
+
+/*******************************************************************************
+ *                             M A I N
+ ******************************************************************************/
+
+ .app__main {
+     display: flex;
+     flex-direction: row;
+     flex: 1;  /* take the rest of the width */
+     padding-top: 0.3em;
+ }
+
+ .resizer {
+     display: flex;
+ }
+
+ .resizer__left {
+     width: 50%;
+ }
+
+ .resizer__visual {
+     width: 1px;
+     height: 100%;
+     background-color: var(--black);
+ }
+
+ .resizer__mid {
+     padding: .3em 1em;
+     cursor: col-resize;
+ }
+
+ .resizer__right {
+    flex: 1 1 0%;
+ }
 
 /*******************************************************************************
  *                           B I G   M A P
  ******************************************************************************/
 .app__map {
+    position: relative;
     grid-area: map;
     background-color: "white";
-    height: 100%;
+    height: calc(100vh - var(--header-height));
     overflow: hidden;
 }
 
@@ -75,11 +161,22 @@ body {
 }
 
 #map {
-    width: 100%;
-    height: 85vh;
+    position: absolute;
     background-color: black;
+    width: 100%;
+    height: 100%;
 }
 
+.slider {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 999998;
+    background-color: rgba(0, 0, 0, 0.233);
+    width: 100%;
+    /* TODO **/
+    padding: 1em 1em 1em 3em;
+}
 
 /*******************************************************************************
  *                          D E S C R I P T I O N
@@ -96,32 +193,9 @@ body {
 }
 
 /** also filters here **/
-
-
-/*******************************************************************************
- *                             M O D A L
- ******************************************************************************/
-.app__info {
-    display: none;
-}
-
-.modal__button {
-    cursor: pointer;
-    display: none;
-}
-
-.modal {
-    background-color: seagreen;
-}
-
-
 /*******************************************************************************
  *                            C H A R T S
  ******************************************************************************/
-.text__entry {
+.text__entry {}
 
-}
-
-.chart {
-
-}
+.chart {}

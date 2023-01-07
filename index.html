@@ -13,6 +13,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap">
     <link rel="stylesheet" href="css/style.css">
 
+    <!-- modal -->
+    <link rel="stylesheet" href="css/modal.css">
+
     <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
 
@@ -21,13 +24,13 @@
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
 
     <!-- https://codepen.io/Pierre_Hamel/pen/NWqwOp -->
-    <link rel="stylesheet" href="https://demos.jquerymobile.com/1.4.2/css/themes/default/jquery.mobile-1.4.2.min.css">
+    <!--<link rel="stylesheet" href="https://demos.jquerymobile.com/1.4.2/css/themes/default/jquery.mobile-1.4.2.min.css">
     <link rel="stylesheet" href="css/slider.css">
     <script src="https://demos.jquerymobile.com/1.4.2/js/jquery.js"></script>
 	<script src="https://demos.jquerymobile.com/1.4.2/js/jquery.mobile-1.4.2.min.js"></script>
     <script type="text/javascript">
         $('input').popup();
-    </script>
+    </script>-->
 
     <style>
         /* ??? */
@@ -56,84 +59,118 @@
             <h1 class="header__heading">
                 Bike Accidents in Brno
             </h1>
-            <span class="app__about modal__button">OPEN SESAME</span>
+            <button id="app_modal__btn" class="app__about modal__button">
+                About
+            </button>
         </header>
 
-        <article class="app__info modal">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque
-            impedit iure, sunt eum quod molestiae facere accusantium, ipsum
-            officiis fugiat porro? Repellat animi, assumenda tenetur ut aliquid
-            excepturi adipisci earum.
+        <article id="app_modal" class="app__info modal">
+            <div class="modal__content">
+                <span class="modal__close">&times;</span>
+                <h1>Bike Accidents in Brno</h1>
+                <p class="modal__text">
+                    This is a vizualization of Bike Accidents in Brno, extracted
+                    from public data by <a href="https://data.brno.cz/">data.brno.cz</a>
+                </p>
+                <p class="modal__text">
+                    This was developed as a final project from <em>FI:PV251</em>
+                    in autumn 2022. For more info about the project, or to access
+                    the source code and some documentation, refer to
+                    <a href="https://github.com/balgot/bike-accidents-brno.git">this GitHub repo.</a>
+                </p>
+
+                <div class="modal__instructions instructions">
+                    <em class="instructions__note">Note</em>
+                    <p class="instructions__text">
+                        To view data corresponding to the particular bike road, select
+                        it on the map, and optionally, filter out the desired content.
+                    </p>
+                </div>
+
+                <p class="modal__author modal__text">
+                    Author: Michal Barnišin
+                </p>
+            </div>
         </article>
 
-        <section class="app__map map_area">
-            <div id="map"></div>
-            <form id="time_slider">
-                <div data-role="rangeslider">
-                    <label for="range-1a">Year:</label>
-                    <input type="range" name="range-1a" id="range-1a" min="1998" max="2022" value="1998" data-popup-enabled="true" data-show-value="true">
-                    <label for="range-1b">Rangeslider:</label>
-                    <input type="range" name="range-1b" id="range-1b" min="1998" max="2022" value="2022" data-popup-enabled="true" data-show-value="true">
-                </div>
-            </form>
-        </section>
-
-        <main class="app__data description">
-            <h1 class="description__heading">
-                About the project
-            </h1>
-            <p class="description__more">Map controls...</p>
-            <div id="filters"></div>
-            <div class="descpription__data text">
-                <h1 class="text__header">Selected Bike Road</h1>
-                <p id="selected"></p>
-                <div class="text__about">
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Temporibus, natus beatae distinctio possimus earum ea iusto
-                    pariatur rem, ut iure corporis sint nemo ullam obcaecati
-                    debitis rerum odio quas sequi!
-                </div>
-
-                <div class="text__entry age">
-                    <div id="piechart" class="age__chart chart"></div>
-                    <div class="age__about">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                        Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                        hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                        Commodi fugiat porro amet tenetur.
+        <main class="app__main resizer">
+            <section class="app__map map_area resizer__left">
+                <div class="map" id="map"></div>
+                <form id="time_slider" class="slider">
+                    <div data-role="rangeslider" class="slider__content">
+                        <span class="slider__label">Year</span>
+                        <label for="range-1a">Year from</label>
+                        <input type="range" name="range-1a" id="range-1a" min="1998" max="2022" value="1998" data-popup-enabled="true" data-show-value="true">
+                        <label for="range-1b">Year to</label>
+                        <input type="range" name="range-1b" id="range-1b" min="1998" max="2022" value="2022" data-popup-enabled="true" data-show-value="true">
                     </div>
-                </div>
+                </form>
+            </section>
 
-                <div class="text__entry sex">
-                    <div class="sex__chart chart"></div>
-                    <div class="sex__about">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                        Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                        hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                        Commodi fugiat porro amet tenetur.
-                    </div>
-                </div>
-
-                <div class="text__entry age">
-                    <div class="age__chart chart"></div>
-                    <div class="age__about">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                        Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                        hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                        Commodi fugiat porro amet tenetur.
-                    </div>
-                </div>
-
-                <div class="text__entry sex">
-                    <div class="sex__chart chart"></div>
-                    <div class="sex__about">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                        Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                        hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                        Commodi fugiat porro amet tenetur.
-                    </div>
-                </div>
+            <div class="resizer__mid" id="dragMe">
+                <div class="resizer__visual"></div>
             </div>
+
+            <section class="app__text resizer__right text">
+                <h1 class="text__heading">
+                    Sumavska
+                </h1>
+                <div class="filter">
+
+                </div>
+                <p class="description__more">Map controls...</p>
+
+                <div class="descpription__data text">
+                    <h1 class="text__header">Selected Bike Road</h1>
+                    <p id="selected"></p>
+                    <div class="text__about">
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                        Temporibus, natus beatae distinctio possimus earum ea iusto
+                        pariatur rem, ut iure corporis sint nemo ullam obcaecati
+                        debitis rerum odio quas sequi!
+                    </div>
+
+                    <div class="text__entry age">
+                        <div id="piechart" class="age__chart chart"></div>
+                        <div class="age__about">
+                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
+                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
+                            Commodi fugiat porro amet tenetur.
+                        </div>
+                    </div>
+
+                    <div class="text__entry sex">
+                        <div class="sex__chart chart"></div>
+                        <div class="sex__about">
+                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
+                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
+                            Commodi fugiat porro amet tenetur.
+                        </div>
+                    </div>
+
+                    <div class="text__entry age">
+                        <div class="age__chart chart"></div>
+                        <div class="age__about">
+                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
+                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
+                            Commodi fugiat porro amet tenetur.
+                        </div>
+                    </div>
+
+                    <div class="text__entry sex">
+                        <div class="sex__chart chart"></div>
+                        <div class="sex__about">
+                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
+                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
+                            Commodi fugiat porro amet tenetur.
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -141,5 +178,7 @@
     <script src="scripts/data_roads_get.js"></script>
     <script src="scripts/pie_chart.js"></script>
     <script src="scripts/data_accidents_get.js"></script>
+    <script src="scripts/utils/modal.js"></script>
+    <script src="scripts/utils/resizer.js"></script>
 </body>
 </html>
