@@ -16,7 +16,7 @@ const ACC_BIKER_AGE = "vek_skupina";
 // ...
 
 
-d3.json(BIKE_ACCIDENTS).get((err, data) => {
+d3.json(BIKE_ACCIDENTS_URL).get((err, data) => {
     if (!data) {
         console.log(`Error parsing data: ${err}`);
     }

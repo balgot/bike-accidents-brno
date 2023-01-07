@@ -10,7 +10,7 @@ const ROAD_TYPE = "typ_opatreni";
 const ROAD_GEO = "geometry";
 
 
-d3.json(BIKE_ROADS).get((err, data) => {
+d3.json(BIKE_ROADS_URL).get((err, data) => {
     if (!data) {
         console.log(`Error parsing data: ${err}`);
     }
