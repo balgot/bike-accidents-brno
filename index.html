@@ -9,6 +9,15 @@
     <link href="assets/pics/favicon.ico" rel="icon" media="(prefers-color-scheme: light)" type="image/x-icon" />
     <link href="assets/pics/favicon--dark_mode.ico" rel="icon" type="image/x-icon" />
 
+    <!-- https://codepen.io/Pierre_Hamel/pen/NWqwOp for range slider -->
+    <!--<link rel="stylesheet" href="https://demos.jquerymobile.com/1.4.2/css/themes/default/jquery.mobile-1.4.2.min.css">
+    <link rel="stylesheet" href="css/slider.css">
+    <script src="https://demos.jquerymobile.com/1.4.2/js/jquery.js"></script>
+	<script src="https://demos.jquerymobile.com/1.4.2/js/jquery.mobile-1.4.2.min.js"></script>
+    <script type="text/javascript">
+        $('input').popup();
+    </script>-->
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap">
     <link rel="stylesheet" href="css/style.css">
@@ -23,14 +32,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
 
-    <!-- https://codepen.io/Pierre_Hamel/pen/NWqwOp -->
-    <!--<link rel="stylesheet" href="https://demos.jquerymobile.com/1.4.2/css/themes/default/jquery.mobile-1.4.2.min.css">
-    <link rel="stylesheet" href="css/slider.css">
-    <script src="https://demos.jquerymobile.com/1.4.2/js/jquery.js"></script>
-	<script src="https://demos.jquerymobile.com/1.4.2/js/jquery.mobile-1.4.2.min.js"></script>
-    <script type="text/javascript">
-        $('input').popup();
-    </script>-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         /* ??? */
@@ -59,9 +61,15 @@
             <h1 class="header__heading">
                 Bike Accidents in Brno
             </h1>
-            <button id="app_modal__btn" class="app__about modal__button">
-                About
-            </button>
+            <div class="header__controls">
+                <button id="app_modal__btn" class="app__about header__button modal__button">
+                    About
+                </button>
+                <button id="app__dark_mode" class="header__button app__dark_mode">
+                    <i class="fa-solid fa-moon" id="dark_mode__img"></i>
+                    <span class="dark_mode__text">Change to dark mode</span>
+                </button>
+            </div>
         </header>
 
         <article id="app_modal" class="app__info modal">
@@ -87,6 +95,12 @@
                     </p>
                 </div>
 
+                <p class="modal__text">
+                    If you encounter any errors related to the map, please report
+                    them on <a href="https://www.openstreetmap.org/fixthemap">
+                    openstreetmap bug tracker</a>.
+                </p>
+
                 <p class="modal__author modal__text">
                     Author: Michal Barnišin
                 </p>
@@ -96,13 +110,23 @@
         <main class="app__main resizer">
             <section class="app__map map_area resizer__left">
                 <div class="map" id="map"></div>
-                <form id="time_slider" class="slider">
-                    <div data-role="rangeslider" class="slider__content">
+
+                <form id="range_slider" class="slider">
+                    <div class="slider__content">
+                        <div class="slider__visual">
+                            <div class="slider__range slider__range--left"></div>
+                            <div class="slider__range slider__range--right"></div>
+                            <div class="slider__range slider__range--mid"></div>
+
+                            <span class="slider__handle slider__handle--left"></span>
+                            <span class="slider__handle slider__handle--right"></span>
+                        </div>
+
                         <span class="slider__label">Year</span>
-                        <label for="range-1a">Year from</label>
-                        <input type="range" name="range-1a" id="range-1a" min="1998" max="2022" value="1998" data-popup-enabled="true" data-show-value="true">
-                        <label for="range-1b">Year to</label>
-                        <input type="range" name="range-1b" id="range-1b" min="1998" max="2022" value="2022" data-popup-enabled="true" data-show-value="true">
+                        <label for="range_from">Year from</label>
+                        <input type="range" name="range_from" class="slider__input slider__input--from" tabindex="0" min="2002" max="2023" step="1" value="2002">
+                        <label for="range_to">Year to</label>
+                        <input type="range" name="range_to" class="slider__input slider__input--to" tabindex="0" min="2002" max="2023" step="1" value="2023">
                     </div>
                 </form>
             </section>
@@ -115,6 +139,7 @@
                 <h1 class="text__heading">
                     Sumavska
                 </h1>
+                <p id="about_road"></p>
                 <div class="filter">
 
                 </div>
@@ -174,11 +199,17 @@
         </main>
     </div>
 
-    <script src="scripts/bike_accidents.js"></script>
-    <script src="scripts/data_roads_get.js"></script>
-    <script src="scripts/pie_chart.js"></script>
-    <script src="scripts/data_accidents_get.js"></script>
+    <script src="scripts/data/accidents.js"></script>
+    <script src="scripts/data/roads.js"></script>
+
+    <script src="scripts/graphs/pie_chart.js"></script>
+
+    <script src="scripts/utils/geocluster.js"></script>
     <script src="scripts/utils/modal.js"></script>
     <script src="scripts/utils/resizer.js"></script>
+    <script src="scripts/utils/translations.js"></script>
+
+    <script src="scripts/common.js"></script>
+    <script src="scripts/main.js"></script>
 </body>
 </html>

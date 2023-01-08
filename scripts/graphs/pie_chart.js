@@ -3,20 +3,29 @@
  * ---------
  *
  * (inspired by http://bl.ocks.org/dbuezas/9306799)
+ * TODO: check
  */
 
-const _width = 800;
-const _height = 800;
-const _radius = Math.min(_width, _height) / 2;
+class PieChart {
+	constructor (width, height) {
+		this.width = width;
+		this.height = height;
+		this.radius = Math.min(width, height) / 2;
+	}
 
-const drawPieChart = (where, data, attr) => {
-    console.log("draw pie chart", where, attr);
-    const svg = where.append("svg").attr("width", _width).attr("height", _height).append("g");
-    svg.append("g").attr("class", "slices");
-    svg.append("g").attr("class", "labels");
-    svg.append("g").attr("class", "lines");
+	/** draw(append) pie chart to the given html element **/
+	draw(where, data, attr) {
+		console.log(`PieChart.draw(): ${data}, ${attr}`);
 
-    const pie = d3.pie().sort(null)  // ascending
+		const svg = where.append("svg")
+		                 .attr("width", this.width)
+						 .attr("height", this.height)
+						 .append("g");
+		svg.append("g").attr("class", "slices");
+		svg.append("g").attr("class", "labels");
+		svg.append("g").attr("class", "lines");
+
+		const pie = d3.pie().sort(null)  // ascending
                         .value((d) => d.value);
     const arc = d3.arc().outerRadius(_radius * 0.8)
                         .innerRadius(_radius * 0.4);
@@ -113,6 +122,5 @@ const drawPieChart = (where, data, attr) => {
 
 	polyline.exit()
 		.remove();
-};
-
-
+	}
+}

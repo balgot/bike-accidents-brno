@@ -15,8 +15,12 @@ The presented data are accessible at [Brno public data](https://data.brno.cz/):
 * accidents [here](https://data.brno.cz/datasets/mestobrno::cyklistick%C3%A9-nehody-bike-accidents/about)
 * the cycling roads [here](https://data.brno.cz/datasets/mestobrno::cykloopat%C5%99en%C3%AD-zrealizovan%C3%A1-cycling-infrastructure-existing/about)
 
+## Other sources
+
+Amazing vizualisation also at [https://storymaps.arcgis.com/stories/ac4013968cc64728b5663b375f7a372c](https://storymaps.arcgis.com/stories/ac4013968cc64728b5663b375f7a372c).
+
 
 ## TODO
 
-[ ] create interactive web page
-[ ] inset images into description
+-  create interactive web page
+-  inset images into description

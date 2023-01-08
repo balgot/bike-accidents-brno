@@ -1,3 +1,4 @@
+/** script used to resize the middle part, i.e. map vs data description **/
 /* see: https://htmldom.dev/create-resizable-split-views/ */
 
 // Query the element
@@ -23,7 +24,6 @@ const mouseDownHandler = function (e) {
     // Attach the listeners to `document`
     document.addEventListener('mousemove', mouseMoveHandler);
     document.addEventListener('mouseup', mouseUpHandler);
-    console.log("mouse down");
 };
 
 // Attach the handler

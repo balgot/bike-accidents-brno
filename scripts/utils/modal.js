@@ -9,7 +9,7 @@ const modal_btn = document.getElementById("app_modal__btn");
 // Get the <span> element that closes the modal
 const modal_close = document.getElementsByClassName("modal__close")[0];
 
-modal_btn.onclick = () => {modal.style.display = "block"; console.log("Openning modal"); };
+modal_btn.onclick = () => {modal.style.display = "block"; };
 modal_close.onclick = () => (modal.style.display = "none");
 
 // When the user clicks anywhere outside of the modal, close it
