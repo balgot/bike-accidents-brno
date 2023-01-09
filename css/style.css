@@ -229,7 +229,7 @@ a:hover, a:focus, a:visited {
     height: var(--header-height);
     justify-content: space-between;
     background-color: var(--color-secondary);
-    padding: 0.3em;
+    /* padding: 0.3em; */
 }
 
 .header__heading {
@@ -282,7 +282,8 @@ a:hover, a:focus, a:visited {
 
 /* todo: somthing about !important */
 :root .app__main, :root.loading .app__main {
-    display: none !important;
+    visibility: hidden !important;
+    height: 0;
 }
 
 :root .preloader, :root.loading .preloader {
@@ -290,7 +291,7 @@ a:hover, a:focus, a:visited {
 }
 
 :root.ready .app__main {
-    display: flex !important;
+    visibility: visible !important;
 }
 
 :root.ready .preloader {
@@ -301,7 +302,7 @@ a:hover, a:focus, a:visited {
      display: flex;
      flex-direction: row;
      flex: 1;  /* take the rest of the width */
-     padding-top: 0.3em;
+     /* padding-top: 0.3em; */
  }
 
  .resizer {

@@ -20,33 +20,27 @@ const initMap = () => {
     return map;
 };
 
+/**
+ * Get the address of the point using the *nominatim* service.
+ *
+ * @param {Number} lattitude WGS84 projection
+ * @param {Number} longitude WGS84 projection
+ * @returns {{street: String, suburb: String, city: String}}
+ *      object with street, suburb and city as strings
+ *      on error, "unknown" values are returned
+ *
+ * @see
+ *      * API documentation: https://nominatim.org/release-docs/develop/api/Reverse/
+ *      * SO example: https://stackoverflow.com/questions/66506483/how-to-get-the-address-from-coordinates-with-open-street-maps-api
+ *      * terms of use: https://operations.osmfoundation.org/policies/nominatim/
+ *
+ * @todo
+ *      * cache results
+ *      * provide a attribution in <About> modal
+ *      * something with API limit?
+ *      * error handling?
+ */
 const getAddress = async (lattitude, longitude) => {
-    /**
-     * Get the address of the point using the nominatim service.
-     *
-     * Arguments
-     * =========
-     *      latitude: float, WGS84 projection
-     *      longitude: float, WGS84 projection
-     *
-     * Returns
-     * =======
-     *      object with street, suburb and city as strings
-     *      on error, "unknown" values are returned
-     *
-     * About
-     * =====
-     *      * API documentation: https://nominatim.org/release-docs/develop/api/Reverse/
-     *      * SO example: https://stackoverflow.com/questions/66506483/how-to-get-the-address-from-coordinates-with-open-street-maps-api
-     *      * terms of use: https://operations.osmfoundation.org/policies/nominatim/
-     *
-     * TODO
-     * ====
-     *      * cache results
-     *      * provide a attribution in <About> modal
-     *      * something with API limit?
-     *      * error handling?
-     */
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lattitude}&lon=${longitude}&zoom=17&accept-language=en`;
     const headers = { "User-Agent": "bike-accidents-in-brno" };
     return fetch(url, { headers })
@@ -181,3 +175,10 @@ const handleRest = () => {
     // when the user clicks on the graph, filter out the accidents,
     // and display something to show all of them
 };
+
+
+const changeDisplayYear = (min, max, data) => {
+    // return <text> back to the original, unselected
+    // filter the roads and the accidents
+    // show only specific roads
+}

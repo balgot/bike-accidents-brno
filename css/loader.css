@@ -27,7 +27,7 @@
     flex-direction: column-reverse;
     align-items: center;
     justify-content: center;
-    flex: 1;  /* take as much space as possible */
+    flex-grow: 2;  /* take as much space as possible */
 }
 
 .preloader .bike {

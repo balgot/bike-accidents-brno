@@ -2,6 +2,8 @@
 
 
 var road_pollys;  // TODO: remove
+var map; // TODO: remove
+
 const initialize = async (use_clusters = false) => {
     // load all the data, create necessary points
     // show loading screen during this
@@ -12,7 +14,8 @@ const initialize = async (use_clusters = false) => {
     document.documentElement.classList.add("loading");
 
     // initialize the map
-    const map = initMap();
+    map = initMap();
+
 
     // load and draw accidents data
     const accidents = await loadBikeAccidents();

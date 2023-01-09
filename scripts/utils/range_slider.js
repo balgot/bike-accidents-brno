@@ -1,88 +1,35 @@
-/** Scripts related to the range slider, inspired by: https://codepen.io/scottbram/pen/PoGpyKa */
+/* inspired by https://w3collective.com/double-range-slider-html-css-js/ */
 
-/* Default config */
-// TODO: set them from somewhere else or enforce them in HTML
-const rangeSliderMin = 2000;  // arbitrary ;)
-const rangeSliderMax = new Date().getFullYear();  // up to the current year
+// the element that displays the selected range
+const range = document.querySelector(".range-selected");
+const rangeInputs = document.querySelectorAll(".range-input input");
+const rangePrices = document.querySelectorAll(".range-price input");
 
-/* First set-up the divs displaying the range */
-const RSLeft = document.querySelector(".slider__range--left");
-const RSMid = document.querySelector(".slider__range--mid");
-const RSRight = document.querySelector(".slider__range--right");
-const RSLeftHandle = document.querySelector(".slider__handle--left");
-const RSRightHandle = document.querySelector(".slider__handle--right");
-const RSInputMin = document.querySelector(".slider__input--from");
-const RSInputMax = document.querySelector(".slider__input--to");
+// TODO: add callback
+const rangeUpdate = (a, b) => {
+	const boundA = parseInt(a) || parseInt(rangePrices[0].value);
+	const boundB = parseInt(b) || parseInt(rangePrices[1].value);
 
-// RSLeft.style.width = `${rangeSliderMin + (100 - rangeSliderMax)}%`;
-// RSRight.style.width = `${rangeSliderMin + (100 - rangeSliderMax)}%`;
-// RSMid.style.cssText = `left: ${rangeSliderMin}%; right: ${(100 - rangeSliderMax)}%`;
-// RSLeftHandle.style.left = `${rangeSliderMin}%`;
-// RSRightHandle.style.left = `${rangeSliderMax}%`;
+	const max = Math.max(boundA, boundB);
+	const min = Math.min(boundA, boundB);
 
-// TODO: rename Min, Max as we allow different order
-const RSHandleInput = (minValue, maxValue) => {
-    const realMin = Math.min(minValue, maxValue);
-    const realMax = Math.max(minValue, maxValue);
+	rangePrices[0].value = min;
+	rangeInputs[0].value = min;
+	rangePrices[1].value = max;
+	rangeInputs[1].value = max;
 
-    // need to calculate 3 segments:
-    //  * empty from start to the range
-    //  * range itself
-    //  * empty from range to the end
-    // and store this to vars: <fst segment>[A]<snd segment>[B]<last segment>
-    const totalLength = rangeSliderMax - rangeSliderMin;
-    const A = 100 * (realMin - rangeSliderMin) / totalLength;
-    const B = 100 * (realMax - rangeSliderMin) / totalLength;
+	range.style.left = (min / rangeInputs[0].max) * 100 + "%";
+	range.style.right = 100 - (max / rangeInputs[1].max) * 100 + "%";
+};
 
-    console.log({realMin, realMax, totalLength, A, B});
+rangeInputs.forEach((input) =>
+	input.addEventListener("input", (e) =>
+		rangeUpdate(rangeInputs[0].value, rangeInputs[1].value)
+	)
+);
 
-    // now update all the divs
-    RSLeft.style.cssText = `left: 0; width: ${A}%`;
-    RSMid.style.cssText = `left: ${A}%; width: ${B - A}%`;
-    RSRight.style.cssText = `left: ${B}%; width: ${100 - B}%`;
-
-    // and handles
-    RSLeftHandle.style.left = `${A}%`;
-    RSLeftHandle.innerHTML = `${realMin}`;
-    RSRightHandle.style.left = `${B}%`;
-    RSRightHandle.innerHTML = `${realMax}`;
-
-    // update input
-    console.log("Before", {"min": RSInputMin.value});
-    RSInputMin.value = realMin;
-    RSInputMin.style.value = realMin;
-    console.log("After", RSInputMin.value);
-    RSInputMax.value = realMax;
-}
-
-RSHandleInput(2005, 2013);
-
-RSInputMin.value = rangeSliderMin;
-RSInputMin.addEventListener("input", (e) => RSHandleInput(e.target.value, RSInputMax.value));
-// RSInputMin.addEventListener('input', e => {
-// 	e.target.value = Math.min(e.target.value, e.target.parentNode.childNodes[5].value - 1);
-// 	var value = (100 / ( parseInt(e.target.max) - parseInt(e.target.min) )) * parseInt(e.target.value) - (100 / (parseInt(e.target.max) - parseInt(e.target.min) )) * parseInt(e.target.min);
-
-// 	var children = e.target.parentNode.childNodes[1].childNodes;
-// 	children[1].style.width = `${value}%`;
-// 	children[5].style.left = `${value}%`;
-// 	children[7].style.left = `${value}%`;
-// 	children[11].style.left = `${value}%`;
-
-// 	children[11].childNodes[1].innerHTML = e.target.value;
-// });
-
-RSInputMax.value = rangeSliderMax;
-RSInputMax.addEventListener("input", (e) => RSHandleInput(RSInputMin.value, e.target.value));
-// RSInputMax.addEventListener('input', e => {
-// 	e.target.value = Math.max(e.target.value, e.target.parentNode.childNodes[3].value - (-1));
-// 	var value = (100 / ( parseInt(e.target.max) - parseInt(e.target.min) )) * parseInt(e.target.value) - (100 / ( parseInt(e.target.max) - parseInt(e.target.min) )) * parseInt(e.target.min);
-
-// 	var children = e.target.parentNode.childNodes[1].childNodes;
-// 	children[3].style.width = `${100-value}%`;
-// 	children[5].style.right = `${100-value}%`;
-// 	children[9].style.left = `${value}%`;
-// 	children[13].style.left = `${value}%`;
-
-// 	children[13].childNodes[1].innerHTML = e.target.value;
-// });
+rangePrices.forEach((price) =>
+	price.addEventListener("input", (e) =>
+		rangeUpdate(rangePrices[0].value, rangePrices[1].value)
+	)
+);

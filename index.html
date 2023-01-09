@@ -159,21 +159,25 @@
             <section class="app__map map_area resizer__left">
                 <div class="map" id="map"></div>
 
-                <form id="range_slider" class="slider">
-                    <div class="slider__content">
-                        <div class="slider__visual">
-                            <div class="slider__range slider__range--left"></div>
-                            <div class="slider__range slider__range--right"></div>
-                            <div class="slider__range slider__range--mid"></div>
+                <form class="slider">
+                    <div class="range-price">
+                        <label for="min">From</label>
+                        <input type="number" name="min" value="300">
+                    </div>
 
-                            <span class="slider__handle slider__handle--left"></span>
-                            <span class="slider__handle slider__handle--right"></span>
+                    <div class="range">
+                        <div class="range-slider">
+                            <span class="range-selected"></span>
                         </div>
+                        <div class="range-input">
+                            <input type="range" class="min" min="0" max="1000" value="300" step="10">
+                            <input type="range" class="max" min="0" max="1000" value="700" step="10">
+                        </div>
+                    </div>
 
-                        <label for="range_from" class="slider__label">Year from</label>
-                        <input type="range" name="range_from" class="slider__input slider__input--from" tabindex="0" min="2002" max="2023" step="1" value="2002">
-                        <label for="range_to" class="slider__label">Year to</label>
-                        <input type="range" name="range_to" class="slider__input slider__input--to" tabindex="0" min="2002" max="2023" step="1" value="2023">
+                    <div class="range-price">
+                        <label for="max">To</label>
+                        <input type="number" name="max" value="700">
                     </div>
                 </form>
             </section>
