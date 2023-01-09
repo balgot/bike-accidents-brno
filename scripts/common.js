@@ -1,9 +1,17 @@
+/**
+ * Initialize the Leaflet map.
+ *
+ * @returns {L.Map}
+ *      the map centered to Brno
+ *
+ * @notes different types of maps:
+ *      https://wiki.openstreetmap.org/wiki/Raster_tile_providers
+ */
 const initMap = () => {
-    // create map a center it on top of brno-center
-    const map = L.map('map').setView([49.19522, 16.60796], 13);
+    const Brno = [49.19522, 16.60796];
+    const map = L.map('map').setView(Brno, 13);
 
     // add a layer with data
-    // see https://wiki.openstreetmap.org/wiki/Raster_tile_providers for different types of a map
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'

@@ -27,20 +27,17 @@ const ACC_BIKER_AGE = "vek_skupina";
  *      if loading failed - see console for error message
  */
 const loadBikeAccidents = async () => {
-    return d3.json(BIKE_ACCIDENTS_URL).get((err, data) => {
-        if (!data) {
-            console.log("Error parsing accidents data:", err);
-            return null;
-        }
-        else {
-            const d = data.features.filter((val) => val[ROAD_GEO]);  // only those with geometry
-            console.log("loaded bike data");
-            // bike_data = d; // TODO: remove
-            // drawAccidents(d.slice(0, 10), map); // todo: remove
-            // drawClusteredAccidents(d.slice(0, 10));
-            return d;
-        }
-    });
+    try {
+        // make sure to use d3v5
+        const data = await d3.json(BIKE_ACCIDENTS_URL);
+        // only those with geometry
+        const used = data.features.filter((val) => val[ROAD_GEO]);
+        console.log("Loaded bike accidents data:", {used});
+        return used;
+    }
+    catch {
+        return null;
+    }
 };
 
 
@@ -64,6 +61,19 @@ const initBikeAccident = (data) => {
 }
 
 
+/**
+ * Handle bike accident click.
+ *
+ * Show a popup for now and log it.
+ *
+ * @param {[ClickEvent]} event
+ *      contains `event.target` that point to the clicked marker
+ * @param {[Accident]} data
+ *      bike accidents data
+ * @param {Number} idx
+ *      index to `data` indicating which point was clicked on
+ * @returns nothing
+ */
 const accidentClick = (event, data, idx) => {
     const target = event.target;  // the marker
     console.log(event);

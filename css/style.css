@@ -280,6 +280,23 @@ a:hover, a:focus, a:visited {
  *                             M A I N
  ******************************************************************************/
 
+/* todo: somthing about !important */
+:root .app__main, :root.loading .app__main {
+    display: none !important;
+}
+
+:root .preloader, :root.loading .preloader {
+    display: flex !important;
+}
+
+:root.ready .app__main {
+    display: flex !important;
+}
+
+:root.ready .preloader {
+    display: none !important;
+}
+
  .app__main {
      display: flex;
      flex-direction: row;

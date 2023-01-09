@@ -16,27 +16,23 @@ const ROAD_GEO = "geometry";
  *      loaded data, a list of records, or null, if an error occured
  */
 const loadRoads = async () => {
-    return d3.json(BIKE_ROADS_URL).get((err, data) => {
-        if (err || !data) {
-            console.log("Error parsing data:", err);
-            return null;
-        }
-        else {
-            console.log("loaded bike roads");
-            const filtered_data = data.features.filter((val) => val[ROAD_GEO]);  // only those with geometry
-            const used_data = filtered_data.map((elem) => {
-                let attr = elem.attributes;
-                attr[ROAD_GEO] = elem.geometry;
-                return attr;
-            });
-            return used_data;
-            const polys = initAllRoads(used_data);
-            const [min, max] = minMaxYear(used_data);
-            displayRoads(map, used_data, polys, min, max);
-            road_data = used_data; road_pollys = polys; min_year = min; max_year = max;  // TODO: remove
-            return [used_data, polys, min, max];
-        }
-    });
+    try {
+        // make sure to use d3v5
+        const data = await d3.json(BIKE_ROADS_URL);
+        // only those with geometry
+        const filtered_data = data.features.filter((val) => val[ROAD_GEO]);
+        // preprocess a bit
+        const used = filtered_data.map((elem) => {
+            let attr = elem.attributes;
+            attr[ROAD_GEO] = elem.geometry;
+            return attr;
+        });
+        console.log("Loaded bike roads data:", {used});
+        return used;
+    }
+    catch {
+        return null;
+    }
 };
 
 /**
