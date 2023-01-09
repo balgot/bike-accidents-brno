@@ -62,8 +62,19 @@ const filter = () => {
     // handle filter events and show only necessary parts
 };
 
-/** switch to/from dark mode **/
 const switchDarkMode = () => {
+    /**
+     * Switch the dark mode.
+     *
+     * The detection of dark mode is based on the icon in the header.
+     * This needs proper initialisation at the start of the script.
+     *
+     * TODO
+     * ====
+     *      initialize the icon at the start
+     *
+     * Inspired by https://webdesign.tutsplus.com/tutorials/color-schemes-with-css-variables-and-javascript--cms-36989.
+     */
     const STYLE_TO_DARK = "fa-solid fa-moon";
     const STYLE_TO_LIGHT = "fa-solid fa-sun";
     const switcher = document.getElementById("dark_mode__img");
@@ -75,8 +86,9 @@ const switchDarkMode = () => {
     // modify the button
     switcher.className = on ? STYLE_TO_LIGHT : STYLE_TO_DARK;
 
-    // change color scheme in css
-    // TODO: https://webdesign.tutsplus.com/tutorials/color-schemes-with-css-variables-and-javascript--cms-36989
+    // change the color scheme
+    document.documentElement.classList.remove(on ? "light" : "dark");
+    document.documentElement.classList.add(on ? "dark" : "light");
 };
 
 const handleRoadClick = (whichRoad) => {

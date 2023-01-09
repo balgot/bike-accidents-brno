@@ -1,7 +1,6 @@
-/* primary colors: main content
- * secondary: header...
- * terciary: other */
-
+/*******************************************************************************
+ *                         C O N S T A N T S
+ ******************************************************************************/
 
 :root {
     --font-family: "Roboto Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -9,30 +8,40 @@
     --size-font-big: 2em;
     --header-height: 3.5em;
 
-    /* colors */
-
+    /***************************************************************************
+     * colors
+     * ======
+     *
+     * primary colors: main content
+     * secondary: header...
+     * terciary: other
+     **************************************************************************/
 
     /* dark mode colors */
     --dark-dark-black: #010409;
-    --dark-mid-black: #0d1117;
+    --dark-mid-black: #222222;
     --dark-light-black: #161b22;
     --dark-white: #8b949e;
     --dark-mid-white: #c9d1d9;
     --dark-lite-white: #f0f6fc;
     --dark-red: rgb(134, 18, 18);
+    --dark-yellow: rgb(145, 161, 0);
+    --dark-orange: rgb(167, 100, 0);
 
     /* light mode colors */
     --black: black;
-    --grey: #C4C4C4;
+    --grey: #f7f7f7f7;
+    --light-blue: rgb(29, 127, 255);
+    --purple: rgb(96, 39, 172);
     --light-grey: #E5E5EC;
     --light-green: #89fd98;
-    --green: rgb(3, 128, 86);
+    --green: rgb(2, 46, 31);
     --red: #ff5e8e;
-    --white: rgb(243, 240, 240);
+    --white: white;
 }
 
 /* default theme is white... */
-:root, :root.light {
+:root {
     --color-primary: var(--white);
     --color-font-primary: var(--black);
     --color-secondary: var(--grey);
@@ -41,6 +50,41 @@
     --color-font-terciary: var(--black);
     --color-alert: var(--red);
     --color-font-alert: var(--white);
+    --map-brightness: 100%;
+    --link-default-color: var(--light-blue);
+    --link-visited-color: var(--purple);
+}
+
+/* just a copy in case the user has a dark mode in the browser */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-primary: var(--dark-dark-black);
+        --color-font-primary: var(--dark-white);
+        --color-secondary: var(--dark-mid-black);
+        --color-font-secondary: var(--dark-mid-white);
+        --color-terciary: var(--dark-light-black);
+        --color-font-terciary: var(--dark-lite-white);
+        --color-alert: var(--dark-red);
+        --color-font-alert: var(--dark-white);
+        --map-brightness: 40%;
+        --link-default-color: var(--dark-yellow);
+        --link-visited-color: var(--dark-orange);
+    }
+}
+
+/* the themes definitions - make sure it overrides previous values */
+:root.light {
+    --color-primary: var(--white);
+    --color-font-primary: var(--black);
+    --color-secondary: var(--grey);
+    --color-font-secondary: var(--green);
+    --color-terciary: var(--light-grey);
+    --color-font-terciary: var(--black);
+    --color-alert: var(--red);
+    --color-font-alert: var(--white);
+    --map-brightness: 100%;
+    --link-default-color: var(--light-blue);
+    --link-visited-color: var(--purple);
 }
 
 /* but we support also dark mode */
@@ -53,36 +97,9 @@
     --color-font-terciary: var(--dark-lite-white);
     --color-alert: var(--dark-red);
     --color-font-alert: var(--dark-white);
-}
-
-:root {
-    --font-family: "Roboto Slab", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --black: black;
-    --grey: #C4C4C4;
-    --light-grey: #E5E5EC;
-    --light-green: #74ff87;
-    --green: rgb(4, 97, 66);
-    --red: #ff5e8e;
-    --white: white;
-    --color-font-primary: var(--black);
-    /* --color-font-secondary: var(--black); */
-    --color-primary: var(--white);
-    --color-secondary: var(--light-green);
-    --color-alert-font: var(--white);
-    --color-alert: var(--red);
-    --color-bg-terciary: var(--light-grey);
-    --font-sz-header: 1.75em;
-    --header-height: minmax(3.5em, 3.5em);
-    --color-bg-secondary: rgb(43, 43, 43);
-    --color-font-secondary: rgb(4, 214, 144);
-    --size-font-big: 2em;
-
-    --dark-dark-black: #010409;
-    --dark-mid-black: #0d1117;
-    --dark-light-black: #161b22;
-    --dark-white: #8b949e;
-    --dark-mid-white: #c9d1d9;
-    --dark-lite-white: #f0f6fc;
+    --map-brightness: 40%;
+    --link-default-color: var(--dark-yellow);
+    --link-visited-color: var(--dark-orange);
 }
 
 
@@ -102,20 +119,76 @@ body {
     cursor: default;
 }
 
+a {
+    text-decoration: underline;
+    color: var(--link-default-color);
+}
+
+a:hover, a:focus, a:visited {
+    color: var(--link-visited-color);
+}
+
 .app {
     display: flex;
     flex-direction: column;
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background-color: #2b3036; color: #c5c8cc;
+    background-color: var(--color-primary);
+    color: var(--color-font-primary);
 }
 
-/* todo: remove */
-.map {
-    filter: brightness(30%);
-}
+/*******************************************************************************
+ *                             M O D A L
+ ******************************************************************************/
 
+ .modal {
+    display: none;
+    position: fixed;
+    z-index: 999999; /* Sit on top, temporary fix for leaflet z-index, TODO: fix */
+    left: 0;
+    top: 0;
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .modal__content {
+    margin: 15% auto; /* 15% from the top and centered */
+    background-color: var(--color-primary);
+    padding: 20px;
+    border: 1px solid var(--color-font-primary);
+    width: min(80%, 50em); /* Could be more or less, depending on screen size */
+  }
+
+  /* The Close Button */
+  .modal__close {
+    color: var(--color-font-primary);
+    float: right;
+    font-size: 1.5em;
+    font-weight: bold;
+    transition: all linear .2s;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .modal__heading {
+    display: inline-block;
+    color: var(--color-font-secondary);
+    border-bottom: 1px solid var(--color-font-primary);
+  }
+
+  .modal__text {
+      margin: 0.5em 0;
+      padding: .5em .1em;
+  }
+
+  .modal__close:hover,
+  .modal__close:focus {
+    color: var(--color-font-secondary);
+  }
 
 
 /*******************************************************************************
@@ -155,7 +228,7 @@ body {
     width: 100%;
     height: var(--header-height);
     justify-content: space-between;
-    background-color: var(--color-bg-secondary);
+    background-color: var(--color-secondary);
     padding: 0.3em;
 }
 
@@ -183,14 +256,14 @@ body {
     border-radius: 9px;
     border: none;
     cursor: pointer;
-    background-color: var(--color-bg-secondary);
+    background-color: var(--color-secondary);
     padding: .1em 1.2em;
     color: var(--color-font-secondary);
 }
 
 .header__button:hover {
     background-color: var(--color-font-secondary);
-    color: var(--color-bg-secondary);
+    color: var(--color-secondary);
 }
 
 .dark_mode__text {
@@ -240,6 +313,7 @@ body {
 /*******************************************************************************
  *                           B I G   M A P
  ******************************************************************************/
+
 .app__map {
     position: relative;
     grid-area: map;
@@ -248,7 +322,6 @@ body {
     overflow: hidden;
 }
 
-/** mock **/
 .map_area {
     display: flex;
     flex-direction: column;
@@ -256,16 +329,16 @@ body {
 
 #map {
     position: absolute;
-    background-color: black;
     width: 100%;
     height: 100%;
+    filter: brightness(var(--map-brightness));
 }
 
 .slider {
     position: absolute;
     bottom: 0;
     left: 0;
-    z-index: 999998;
+    z-index: 999998;  /* need to make this huge due to map setting its z-index */
     background-color: rgba(0, 0, 0, 0.233);
     width: 100%;
     /* TODO **/
@@ -275,10 +348,12 @@ body {
 /*******************************************************************************
  *                          D E S C R I P T I O N
  ******************************************************************************/
-.app__data {
-    grid-area: data;
-    background-color: white;
-    height: 100%;
+
+.text {
+    overflow: auto;
+}
+.app__text {
+    height: calc(100vh - var(--header-height));
     overflow-y: auto;
 }
 
@@ -286,10 +361,15 @@ body {
     padding: 1.5em;
 }
 
+.text__about {
+    /* mock */
+    height: 20vh;
+}
+
 /** also filters here **/
 /*******************************************************************************
  *                            C H A R T S
  ******************************************************************************/
-.text__entry {}
+.text__entry { height: 20vh; }
 
 .chart {}
