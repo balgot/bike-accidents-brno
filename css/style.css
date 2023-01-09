@@ -320,6 +320,7 @@ a:hover, a:focus, a:visited {
     background-color: "white";
     height: calc(100vh - var(--header-height));
     overflow: hidden;
+    filter: brightness(var(--map-brightness));
 }
 
 .map_area {
@@ -331,18 +332,6 @@ a:hover, a:focus, a:visited {
     position: absolute;
     width: 100%;
     height: 100%;
-    filter: brightness(var(--map-brightness));
-}
-
-.slider {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    z-index: 999998;  /* need to make this huge due to map setting its z-index */
-    background-color: rgba(0, 0, 0, 0.233);
-    width: 100%;
-    /* TODO **/
-    padding: 1em 1em 1em 3em;
 }
 
 /*******************************************************************************

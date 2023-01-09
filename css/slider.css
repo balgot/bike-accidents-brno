@@ -1,53 +1,77 @@
 /* https://codepen.io/scottbram/pen/PoGpyKa */
 
+
+
+.slider__label {
+    display: none;
+}
+
 .slider {
-    --range-slider-common-height: 16px;
-    --range-slider-handle-width: 24px;
-    --range-slider-handle-height: 24px;
+    --range-slider-common-height: 0.5em;
+    --range-slider-handle-width: 4rem;
+    --range-slider-handle-height: 1em;
 
     position: absolute;
     left: 0;
     bottom: 0;
     display: flex;
+    z-index: 999998;  /* need to make this huge due to map setting its z-index */
+
 	align-items: center;
     justify-content: center;
-    width: 100%;
+    width: calc(100% - 20px);
+    margin: 0 10px 2em 10px;
+    background-color: var(--white);
 }
 
 .slider__content {
     display: flex;
 	align-items: center;
 	height: var(--range-slider-common-height);
+    padding: 0.5em;
+    width: 100%;
+}
+
+.slider__visual {
+    width: 100%;
+    position: relative;
 }
 
 .slider__range {
-    height: 10px;
+    height: 6px;
     position: absolute;
 	left: 0;
-	border-radius: 10px;
-	background-color: #ccc;
-	margin: 0 7px;
+	border-radius: 5px;
+	background-color: rgb(233, 233, 233);
+    transform: translateY(-50%);
+
+}
+
+.slider__range--left {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.slider__range--right {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
 .slider__range--mid {
-    position: absolute;
-    left: 0;
-    top: -1px;
-    height: 16px;
-	border-radius: 14px;
-	background-color: blue;
+    border-radius: 0;
+	background-color: black;
 }
 
 .slider__handle {
     z-index: 1;
     position: absolute;
-	top: -5px;
-    margin-left: -11px;
-    width: var(--range-slider-handle-width);
+    /* width: var(--range-slider-handle-width); */
     height: var(--range-slider-handle-height);
-    border-radius: 25%;
+    padding: 0 0.3em;
+    border-radius: 2px;
     background-color: #fff;
     text-align: left;
+    transform: translateY(-50%);
 
 	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
     outline: none;
@@ -76,6 +100,7 @@
 .slider__input {
     z-index: 1;
     position: absolute;
+    left: 0;
 	width: 100%;
 	height: var(--range-slider-common-height);
 

@@ -14,11 +14,11 @@ const RSRightHandle = document.querySelector(".slider__handle--right");
 const RSInputMin = document.querySelector(".slider__input--from");
 const RSInputMax = document.querySelector(".slider__input--to");
 
-RSLeft.style.width = `${rangeSliderMin + (100 - rangeSliderMax)}%`;
-RSRight.style.width = `${rangeSliderMin + (100 - rangeSliderMax)}%`;
-RSMid.style.cssText = `left: ${rangeSliderMin}%; right: ${(100 - rangeSliderMax)}%`;
-RSLeftHandle.style.left = `${rangeSliderMin}%`;
-RSRightHandle.style.left = `${rangeSliderMax}%`;
+// RSLeft.style.width = `${rangeSliderMin + (100 - rangeSliderMax)}%`;
+// RSRight.style.width = `${rangeSliderMin + (100 - rangeSliderMax)}%`;
+// RSMid.style.cssText = `left: ${rangeSliderMin}%; right: ${(100 - rangeSliderMax)}%`;
+// RSLeftHandle.style.left = `${rangeSliderMin}%`;
+// RSRightHandle.style.left = `${rangeSliderMax}%`;
 
 // TODO: rename Min, Max as we allow different order
 const RSHandleInput = (minValue, maxValue) => {
@@ -31,8 +31,10 @@ const RSHandleInput = (minValue, maxValue) => {
     //  * empty from range to the end
     // and store this to vars: <fst segment>[A]<snd segment>[B]<last segment>
     const totalLength = rangeSliderMax - rangeSliderMin;
-    const A = 100 * realMin / totalLength;
-    const B = 100 * realMax / totalLength;
+    const A = 100 * (realMin - rangeSliderMin) / totalLength;
+    const B = 100 * (realMax - rangeSliderMin) / totalLength;
+
+    console.log({realMin, realMax, totalLength, A, B});
 
     // now update all the divs
     RSLeft.style.cssText = `left: 0; width: ${A}%`;
@@ -44,7 +46,16 @@ const RSHandleInput = (minValue, maxValue) => {
     RSLeftHandle.innerHTML = `${realMin}`;
     RSRightHandle.style.left = `${B}%`;
     RSRightHandle.innerHTML = `${realMax}`;
+
+    // update input
+    console.log("Before", {"min": RSInputMin.value});
+    RSInputMin.value = realMin;
+    RSInputMin.style.value = realMin;
+    console.log("After", RSInputMin.value);
+    RSInputMax.value = realMax;
 }
+
+RSHandleInput(2005, 2013);
 
 RSInputMin.value = rangeSliderMin;
 RSInputMin.addEventListener("input", (e) => RSHandleInput(e.target.value, RSInputMax.value));
