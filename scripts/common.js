@@ -77,27 +77,24 @@ const dist = (acc, road) => {
 }
 
 
+/**
+ * Precompute the accidents for each bike roads.
+ *
+ * @param {L.map} map
+ *      the map on which the data are to be displayed
+ * @param {[BikeRoad]} bike_data
+ *      bike roads data
+ * @param {[[L.polyline]]} bike_polys
+ *      polylines corresponding to the bike roads
+ * @param {[Accident]} accidents_data
+ *      accidents data
+ * @returns distances
+ *      2d array of indices, each row corresponds to one bike road
+ *      and contains the accidents that happened in its proximity
+ *
+ * @note goes over all pairs of roads and accident -- pretty slow
+ */
 const precomputeRoadAccidents = (map, bike_data, bike_polys, accidents_data) => {
-    /**
-     * Precompute the accidents for each bike roads.
-     *
-     * Arguments
-     * =========
-     *      map: the map on which the data are to be displayed
-     *      bike_data: bike roads data
-     *      bike_polys: polylines corresponding to the bike roads
-     *      accidents_data: accidents data
-     *
-     * Return
-     * ======
-     *      2d array of indices, each row corresponds to one bike road
-     *      and contains the accidents that happened in its proximity
-     *
-     * Note
-     * ====
-     *      goes over all pairs of roads and accident -- pretty slow
-     *
-     */
     const REQUIRED_MAX_DIST = 25;  // empirically chosen, metres
     return bike_data.map((road, idx) => {
         const polys = bike_polys[idx];
@@ -120,22 +117,16 @@ const filter = () => {
     // handle filter events and show only necessary parts
 };
 
+/**
+ * Switch the dark mode.
+ *
+ * The detection of dark mode is based on the icon in the header.
+ * This needs proper initialisation at the start of the script.
+ *
+ * @todo initialize the icon at the start
+ * @link https://webdesign.tutsplus.com/tutorials/color-schemes-with-css-variables-and-javascript--cms-36989.
+ */
 const switchDarkMode = () => {
-    /**
-     * Switch the dark mode.
-     *
-     * The detection of dark mode is based on the icon in the header.
-     * This needs proper initialisation at the start of the script.
-     *
-     * TODO
-     * ====
-     *      initialize the icon at the start
-     *
-     * See also
-     * ========
-     *      https://webdesign.tutsplus.com/tutorials/color-schemes-with-css-variables-and-javascript--cms-36989.
-     *
-     */
     const STYLE_TO_DARK = "fa-solid fa-moon";
     const STYLE_TO_LIGHT = "fa-solid fa-sun";
     const switcher = document.getElementById("dark_mode__img");
@@ -157,17 +148,6 @@ const switchDarkMode = () => {
     // change the color scheme
     document.documentElement.classList.remove(turnDMOn ? "light" : "dark");
     document.documentElement.classList.add(turnDMOn ? "dark" : "light");
-};
-
-const handleRoadClick = (whichRoad) => {
-    // update stats about the row, render the graphs
-};
-
-const handleAccidentClick = (whichPoint) => {
-    // display a popup next to the accident with the info
-    // POSSIBLY show marks in each graph
-    // POSSIBLY some pictures of the place?
-    const accident = null;
 };
 
 const handleRest = () => {
