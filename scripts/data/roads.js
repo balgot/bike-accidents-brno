@@ -10,20 +10,16 @@ const ROAD_GEO = "geometry";
 
 
 /**
- * Download the road data, do the initialisation and display the roads.
+ * Download the road data.
  *
- * Return
- * ------
- *      data,
- *      polyline segments,
- *      min year in data,
- *      max year in data
- **/
+ * @returns data
+ *      loaded data, a list of records, or null, if an error occured
+ */
 const loadRoads = async () => {
     return d3.json(BIKE_ROADS_URL).get((err, data) => {
-        if (!data) {
-            console.log(`Error parsing data: ${err}`);
-            return [];
+        if (err || !data) {
+            console.log("Error parsing data:", err);
+            return null;
         }
         else {
             console.log("loaded bike roads");
@@ -33,6 +29,7 @@ const loadRoads = async () => {
                 attr[ROAD_GEO] = elem.geometry;
                 return attr;
             });
+            return used_data;
             const polys = initAllRoads(used_data);
             const [min, max] = minMaxYear(used_data);
             displayRoads(map, used_data, polys, min, max);
@@ -42,64 +39,134 @@ const loadRoads = async () => {
     });
 };
 
+/**
+ * Create the polylines for each Bike Road.
+ *
+ * @param {[BikeRoad]} data
+ *      bike roads data as loaded by `loadRoads`
+ * @returns polylines
+ *      2d list of polylines, each record hold a list of polylines
+ *      for the corresponding BikeRoad, the click event emmited
+ *      i.e. `roadClick` accepts the index to `data`
+ */
 const initAllRoads = (data) => {
-    /* map each element to a sequence of polylines */
-    color = "red"; // temporary
+    const color = "red"; // TODO: temporary, do something with this
     return data.map((elem, idx) => {
-        const polys = elem[ROAD_GEO].paths.map((path) => {
-            const coords = path.map((e) => [e[1], e[0]]);  // swap coords to have the correct format
+        return elem[ROAD_GEO].paths.map((path) => {
+            const coords = path.map((e) => [e[1], e[0]]);
             return L.polyline(coords, {color})
-                    .on("click", () => roadClick(idx));
+                    .on("click", (e) => roadClick(e, data, idx));
         });
-        return polys;
     });
 };
 
-/** Find the minimum and maximum year present in the downloaded data **/
+
+/**
+ * Find the minimum and maximum year present in the downloaded data
+ *
+ * @param {[BikeRoad]} data
+ *      bike roads data as loaded by `loadRoads`
+ * @returns {[Number, Number]} [minYear, maxYear]
+ *      tuple with min and maxYear present in the data
+ */
 const minMaxYear = (data) => {
-    let min = Infinity;
-    let max = new Date().getFullYear();  // current year
-    data.forEach((elem) => {
-        min = Math.min(min, elem[ROAD_YEAR]);
-        max = Math.max(max, elem[ROAD_YEAR]);
-    });
-    return [min, max];
+    const thisYear = new Date().getFullYear();
+    return data.reduce(([min, max], road) => [
+        Math.min(min, road[ROAD_YEAR]),
+        Math.max(max, road[ROAD_YEAR]),
+    ], [thisYear, 0]);
+    // let min = Infinity;
+    // let max = new Date().getFullYear();  // current year
+    // data.forEach((elem) => {
+    //     min = Math.min(min, elem[ROAD_YEAR]);
+    //     max = Math.max(max, elem[ROAD_YEAR]);
+    // });
+    // return [min, max];
 };
 
+/**
+ * Display only the roads in the given year span.
+ *
+ * @param {L.Map} map
+ *      map to which the roads should be drawn
+ * @param {[BikeRoad]} data
+ *      bike road data
+ * @param {[[L.Poyline]]} polys
+ *      the corresponding polylines
+ * @param {Number} from
+ *      min year to include
+ * @param {Number} to
+ *      max year to include
+ *
+ * @returns nothing
+ */
 const displayRoads = (map, data, polys, from, to) => {
     data.forEach((elem, idx) => {
         const keep = from <= elem[ROAD_YEAR] && elem[ROAD_YEAR] <= to;
-        polys[idx].forEach(p => keep ? p.addTo(map) : p.remove());
+        polys[idx].forEach(p => keep ? p.addTo(map) : p.removeFrom(map));
     });
 };
 
-const roadInfo = (data, idx) => {
-    // TODO: add variations
-    // TODO: add styles and markdown
-    // TODO: add pictures of the opatreni
-    const road = data[idx];
-    const streetName = "Random Street";  // TODO: deduc
-    return `Bike road ${streetName} was finished in ${road[ROAD_YEAR]}. The length of the segment is ${road[ROAD_LENGTH]}. The specific project is marked as ${road[ROAD_TYPE]}.`;
+
+/**
+ * Describe the given bike road.
+ *
+ * @param {BikeRoad} road
+ *      bike road to describe
+ * @returns {[String, String]}
+ *      the description with the address
+ *
+ * @todo add more options, variations
+ * @idea add pictures of how it might look like?
+ */
+const roadInfo = (road) => {
+    const streetName = "Random Street";  // TODO: deduce, see common.js
+    const year = road[ROAD_YEAR];
+    const len = road[ROAD_LENGTH];
+    const _type = road[ROAD_TYPE];  // TODO: translate
+    const options = [
+        `
+        <p class="bike_road">
+            Bike Road <span class="bike_road__name">${streetName}</span>
+            was finished in <span class="bike_road__year">${year}</span>.
+            The length of the segment is
+            <span class="bike_road__length">${len}</span>.
+            The project was: <span class="bike_road__project">${_type}</span>.
+        </p>
+        `
+    ];
+    return options[Math.floor(Math.random() * options.length)];
 }
 
-const isOnTheRoad = (road, x, y, delta=1) => {
-    return true; // TODO: finish
-}
 
-const roadClick = (idx) => {
-    // for now just console log, TODO: do sth productive here
-    console.log(road_data[idx]);
+/**
+ * Handle road click event.
+ *
+ * @param {ClickEvent} event
+ *      click event, with `event.taget` pointing to the segment
+ * @param {[BikeRoads]} data
+ *      bike road data
+ * @param {Number} idx
+ *      index of which road got clicked on
+ * @returns nothing
+ * @todo get all polyline
+ */
+const roadClick = (event, data, idx) => {
+    const segment = event.target;  // which polyline
+
+    // for now just console log, TODO: do sth productive here, like filtering
+    console.log(`Road ${idx}: ${data[idx]}`);
 
     // zoom in to the segments
     let bounds = L.latLngBounds();
     road_pollys[idx].forEach((polyline) => {
         bounds.extend(polyline.getBounds());
     });
-    map.flyToBounds(bounds); //, {animate: true, duration: 5});
+    map.flyToBounds(bounds);
 
     // TODO: move somewheer else
     const target = document.getElementById("about_road");
-    target.innerHTML = roadInfo(road_data, idx);
+    target.innerHTML = roadInfo(data, idx);
 
     // TODO: make it more visible
     road_pollys.forEach((poly, i) => {
@@ -109,8 +176,6 @@ const roadClick = (idx) => {
 }
 
 /**
- * TODO: loading screen when fetching data
  * color gradient for years?
- * light & dark mode
  * TODO: cluster on zoom in
  */

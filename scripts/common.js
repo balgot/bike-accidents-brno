@@ -12,12 +12,6 @@ const initMap = () => {
     return map;
 };
 
-const initialize = () => {
-    // load all the data, create necessary points
-    // show loading screen during this
-    // initialize global vars
-};
-
 const getAddress = async (lattitude, longitude) => {
     /**
      * Get the address of the point using the nominatim service.
@@ -57,6 +51,68 @@ const getAddress = async (lattitude, longitude) => {
       });
 };
 
+
+const dist = (acc, road) => {
+    // TODO: remove, used for debuggig
+    const polys = road_pollys[road];
+    const accident = bike_data[acc];
+    const accLocation = L.latLng([accident[ACC_GEO].y, accident[ACC_GEO].x]);
+    const accLocationPX = map.latLngToLayerPoint(accLocation);
+    const closePoints = polys.map(p => p.closestLayerPoint(accLocationPX)).filter(p => !!p);
+    if (!closePoints.length) {
+        console.log("No close points...");
+        return false;
+    }
+    const closePoint = closePoints.reduce((a, b) => a.distance <= b.distance ? a : b);
+    // console.log(closePoints, polys, accLocation, acc);
+    if (!closePoint) {
+        console.log("Null close points");
+        return false;  // nulll TODO?
+    }
+    const polyLocation = map.layerPointToLatLng(closePoint);
+    const realDist = accLocation.distanceTo(polyLocation);
+    return realDist;
+}
+
+
+const precomputeRoadAccidents = (map, bike_data, bike_polys, accidents_data) => {
+    /**
+     * Precompute the accidents for each bike roads.
+     *
+     * Arguments
+     * =========
+     *      map: the map on which the data are to be displayed
+     *      bike_data: bike roads data
+     *      bike_polys: polylines corresponding to the bike roads
+     *      accidents_data: accidents data
+     *
+     * Return
+     * ======
+     *      2d array of indices, each row corresponds to one bike road
+     *      and contains the accidents that happened in its proximity
+     *
+     * Note
+     * ====
+     *      goes over all pairs of roads and accident -- pretty slow
+     *
+     */
+    const REQUIRED_MAX_DIST = 25;  // empirically chosen, metres
+    return bike_data.map((road, idx) => {
+        const polys = bike_polys[idx];
+        return accidents_data.map((acc, i) => [acc, i]).filter(([acc, i]) => {
+            const accLocation = L.latLng([acc[ACC_GEO].y, acc[ACC_GEO].x]);
+            const accLocationPX = map.latLngToLayerPoint(accLocation);
+            const closePoints = polys.map(p => p.closestLayerPoint(accLocationPX)).filter(p => !!p);
+            if (!closePoints.length) return false;
+            const closePoint = closePoints.reduce((a, b) => a.distance <= b.distance ? a : b);
+            if (!closePoint) return false;  // nulll TODO?
+            const polyLocation = map.layerPointToLatLng(closePoint);
+            const realDist = accLocation.distanceTo(polyLocation);
+            return realDist <= REQUIRED_MAX_DIST;
+        }).map(([acc, i]) => i);
+    });
+};
+
 const filter = () => {
     // TODO: better name
     // handle filter events and show only necessary parts
@@ -73,22 +129,32 @@ const switchDarkMode = () => {
      * ====
      *      initialize the icon at the start
      *
-     * Inspired by https://webdesign.tutsplus.com/tutorials/color-schemes-with-css-variables-and-javascript--cms-36989.
+     * See also
+     * ========
+     *      https://webdesign.tutsplus.com/tutorials/color-schemes-with-css-variables-and-javascript--cms-36989.
+     *
      */
     const STYLE_TO_DARK = "fa-solid fa-moon";
     const STYLE_TO_LIGHT = "fa-solid fa-sun";
     const switcher = document.getElementById("dark_mode__img");
-    const on = switcher.className.includes(STYLE_TO_DARK);
+    const turnDMOn = switcher.className.includes(STYLE_TO_DARK);
 
     // change favicon
-    document.querySelectorAll("link[rel*='icon']").forEach((e) => e.href = on ? "assets/pics/favicon--dark_mode.ico" : "assets/pics/favicon.ico");
+    document
+        .querySelectorAll("link[rel*='icon']")
+        .forEach(
+            (e) =>
+                (e.href = turnDMOn
+                    ? "assets/pics/favicon--dark_mode.ico"
+                    : "assets/pics/favicon.ico")
+        );
 
     // modify the button
-    switcher.className = on ? STYLE_TO_LIGHT : STYLE_TO_DARK;
+    switcher.className = turnDMOn ? STYLE_TO_LIGHT : STYLE_TO_DARK;
 
     // change the color scheme
-    document.documentElement.classList.remove(on ? "light" : "dark");
-    document.documentElement.classList.add(on ? "dark" : "light");
+    document.documentElement.classList.remove(turnDMOn ? "light" : "dark");
+    document.documentElement.classList.add(turnDMOn ? "dark" : "light");
 };
 
 const handleRoadClick = (whichRoad) => {
@@ -99,6 +165,7 @@ const handleAccidentClick = (whichPoint) => {
     // display a popup next to the accident with the info
     // POSSIBLY show marks in each graph
     // POSSIBLY some pictures of the place?
+    const accident = null;
 };
 
 const handleRest = () => {
