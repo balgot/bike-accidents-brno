@@ -5,15 +5,7 @@ const range = document.querySelector(".range-selected");
 const rangeInputs = document.querySelectorAll(".range-input input");
 const rangePrices = document.querySelectorAll(".range-price input");
 
-/**
- * TODO
- * @param {*} a
- * @param {*} b
- * @param {*} callback
- * @note messy
- */
-const rangeUpdate = (a, b, callback) => {
-    console.log("RangeUpdate", { a, b });
+const rangeUpdate = (a, b) => {
     const boundA = parseInt(a) || parseInt(rangePrices[0].value);
     const boundB = parseInt(b) || parseInt(rangePrices[1].value);
 
@@ -21,7 +13,7 @@ const rangeUpdate = (a, b, callback) => {
         boundA == parseInt(rangePrices[0].value) &&
         boundB == parseInt(rangePrices[1].value)
     )
-        return;
+        return [boundA, boundB];
 
     const max = Math.max(boundA, boundB);
     const min = Math.min(boundA, boundB);
@@ -35,27 +27,36 @@ const rangeUpdate = (a, b, callback) => {
 	const largest = parseInt(rangeInputs[0].max);
     range.style.left = ((min - smallest) / (largest - smallest)) * 100 + "%";
     range.style.right = 100 - ((max - smallest) / (largest - smallest)) * 100 + "%";
+    return [min, max];
+};
+
+const rangeChange = (a, b, callback) => {
+    console.log("rangeChange");
+    const [min, max] = rangeUpdate(a, b);
     callback(min, max);
 };
 
-const _makeEL = (inputs, callback) => {
+const _makeEL = (inputs, callback, input) => {
     const list = inputs ? rangeInputs : rangePrices;
-    return () => rangeUpdate(list[0].value, list[1].value, callback);
+    if (input)
+        return () => rangeUpdate(list[0].value, list[1].value);
+    return () => rangeChange(list[0].value, list[1].value, callback);
 };
 
 const initializeSlider = (min, max, changeCallback) => {
     rangeInputs.forEach((input) => {
         input.setAttribute("min", `${min}`);
 		input.setAttribute("max", `${max}`);
-        input.addEventListener("input", _makeEL(true, changeCallback));
+        input.addEventListener("input", _makeEL(true, null, true));
+        input.addEventListener("change", _makeEL(true, changeCallback, false));
     });
 
     rangePrices.forEach((price) => {
         price.setAttribute("min", `${min}`);
 		price.setAttribute("max", `${max}`);
-        price.addEventListener("input", _makeEL(false, changeCallback));
+        price.addEventListener("change", _makeEL(false, changeCallback, false));
     });
 
-    rangeUpdate(min, max, changeCallback);
-    changeCallback(min, max); // to be sure it gets called in any case
+    rangeUpdate(min, max);
+    changeCallback(min, max);
 };
