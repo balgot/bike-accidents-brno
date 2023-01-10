@@ -11,7 +11,6 @@ const MAP_ZOOM = 13;
  *      https://wiki.openstreetmap.org/wiki/Raster_tile_providers
  */
 const initMap = () => {
-
     const map = L.map('map').setView(BrnoPosition, MAP_ZOOM);
 
     // add a layer with data
@@ -72,29 +71,6 @@ const getAddress = (lattitude, longitude) => {
 };
 
 
-const dist = (acc, road) => {
-    // TODO: remove, used for debuggig
-    const polys = road_pollys[road];
-    const accident = bike_data[acc];
-    const accLocation = L.latLng([accident[ACC_GEO].y, accident[ACC_GEO].x]);
-    const accLocationPX = map.latLngToLayerPoint(accLocation);
-    const closePoints = polys.map(p => p.closestLayerPoint(accLocationPX)).filter(p => !!p);
-    if (!closePoints.length) {
-        console.log("No close points...");
-        return false;
-    }
-    const closePoint = closePoints.reduce((a, b) => a.distance <= b.distance ? a : b);
-    // console.log(closePoints, polys, accLocation, acc);
-    if (!closePoint) {
-        console.log("Null close points");
-        return false;  // nulll TODO?
-    }
-    const polyLocation = map.layerPointToLatLng(closePoint);
-    const realDist = accLocation.distanceTo(polyLocation);
-    return realDist;
-}
-
-
 /**
  * Precompute the accidents for each bike roads.
  *
@@ -130,11 +106,6 @@ const precomputeRoadAccidents = (map, bike_data, bike_polys, accidents_data) => 
     });
 };
 
-const filter = () => {
-    // TODO: better name
-    // handle filter events and show only necessary parts
-};
-
 /**
  * Switch the dark mode.
  *
@@ -167,16 +138,3 @@ const switchDarkMode = () => {
     document.documentElement.classList.remove(turnDMOn ? "light" : "dark");
     document.documentElement.classList.add(turnDMOn ? "dark" : "light");
 };
-
-const handleRest = () => {
-    // TODO: better name
-    // when the user clicks on the graph, filter out the accidents,
-    // and display something to show all of them
-};
-
-
-const changeDisplayYear = (min, max, data) => {
-    // return <text> back to the original, unselected
-    // filter the roads and the accidents
-    // show only specific roads
-}

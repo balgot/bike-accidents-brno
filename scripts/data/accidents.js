@@ -13,6 +13,7 @@ const ACC_BIKER_SEX = "pohlavi";
 const ACC_BIKER_HELMET = "ozn_osoba";
 const ACC_BIKER_DRUNK = "alkohol";
 const ACC_BIKER_AGE = "vek_skupina";
+const ACC_YEAR = "rok";
 // ... todo: add more relevant fields
 
 
@@ -82,9 +83,14 @@ const accidentClick = (event, data, idx) => {
     console.log(`Accident click:`, target, idx);
 };
 
+/**
+ * Computed clusters markers on the map.
+ */
+var _computedClusters = null;
+
 
 /**
- * Draw accidents data on the map.
+ * Draw accidents data on the map. Based on the map zoom level...
  *
  * @param {[Accident]} data
  *      accidents data as loaded by the `loadBikeAccidents`
@@ -98,6 +104,15 @@ const accidentClick = (event, data, idx) => {
  * @returns nothing
  */
 const drawAccidents = (data, markers, map, doShowFn = null) => {
+    // first clear everythin
+    markers.map(m => m.removeFrom(map));
+    _computedClusters?.map(c => c.removeFrom(map));
+
+    if (map.getZoom() < 15) {
+        drawClusteredAccidents(data, map);  // TODO: tiny bit of cheating by not showing only the relevant data, but whatever
+        return;
+    }
+
     const show = (accident, marker) => (doShowFn == null ? true : doShowFn(accident, marker));
     data.forEach((accident, idx) => {
         const marker = markers[idx];
@@ -119,20 +134,18 @@ const drawAccidents = (data, markers, map, doShowFn = null) => {
  *      controls how dense a cluster should be
  *
  * @returns nothing
- *
- * TODO
- * ====
- *      hide clusters when zooming-in or out
  */
 const drawClusteredAccidents = (data, map, stddev=0.7) => {
     const coords = data.map((e) => [e[ACC_GEO].y, e[ACC_GEO].x]);
     const clusters = geocluster(coords, stddev);
-    clusters.forEach(cluster => {
-        L.circle(cluster.centroid, {
+    _computedClusters = clusters.map(cluster => {
+        const circle = L.circle(cluster.centroid, {
                 color: 'blue',
                 fillColor: '#f03',
                 fillOpacity: 0.5,
                 radius: 3 * cluster.elements.length
-            }).addTo(map);
+            });
+        circle.addTo(map);
+        return circle;
     });
 };

@@ -1,25 +1,61 @@
 /** contains the main logic of the app, to be loaded as last **/
-var DBG = true;
-var road_pollys; // TODO: remove
-var map; // TODO: remove
+
+/******************************************************************************
+ *                      C O N S T A N T S
+ ******************************************************************************/
 
 const unselectForm = document.querySelector(".unselect");
 const unselectHidden = "unselect--invisible";
 const aboutRoad = document.getElementById("about_road");
+const minYearSpan = document.querySelector(".about__year--min");
+const maxYearSpan = document.querySelector(".about__year--max");
+const COLOR_ROAD_SELECTED = "blue";
+const COLOR_ROAD_UNSELECTED = "red";
 
-unselectForm.addEventListener("click", (e) => {
-    e.preventDefault();
-    markRoads();
-    resetMap(map);
-    unselectForm.classList.add(unselectHidden);
-    aboutRoad.innerHTML = "";
-});
+/******************************************************************************
+ *                      V A R I A B L E S
+ ******************************************************************************/
 
+var DBG = true;
+var map; // the map used for visualization
+
+// bike roads data
+var roads; // just as downloaded
+var selectedRoadIdx = null; // selected road or null
+var filteredRoads;  // same as `filteredAccidents`
+var roadsPolylines;
+
+// accidents data
+var accidents; // just as downloaded, well, almost ;)
+var filteredAccidents; // filtered & selected, working version, list of objects, keys are reasons for display state, values are bools, true indicating to display
+var accidentsMarkers; // markers for each accident, have same length
+
+// array, one entry for each row contains a list of indexes to accidents
+var bikeRoadsAccidents;
+
+/******************************************************************************
+ *                        H E L P E R S
+ ******************************************************************************/
+
+/**
+ * Color the roads polylines.
+ *
+ * @param {Number} selectedIdx index of road to highlight
+ * @returns nothing
+ */
 const markRoads = (selectedIdx = null) => {
-    road_pollys.forEach((poly, i) => {
-        const color = i === selectedIdx ? "blue" : "red";
+    roadsPolylines.forEach((poly, i) => {
+        const color =
+            i === selectedIdx ? COLOR_ROAD_SELECTED : COLOR_ROAD_UNSELECTED;
         poly.forEach((p) => p.setStyle({ color }));
     });
+};
+
+/* TODO */
+const renderSelection = () => {
+    // display all the stuff
+    drawAccidents(accidents, accidentsMarkers, map, () => true); // TODO: use selectedIdx's instead of function
+    displayRoads(map, roads, roadsPolylines, minYear, maxYear); // TODO: use selectedInx's instead of min, max year
 };
 
 /**
@@ -32,17 +68,18 @@ const markRoads = (selectedIdx = null) => {
  * @param {Number} idx
  *      index of which road got clicked on
  * @returns nothing
- * @todo get all polyline
  */
 const roadClick = (event, data, idx) => {
-    const segment = event.target; // which polyline
+    // prevent site reloading
+    const segment = event.target;
 
-    // for now just console log, TODO: do sth productive here, like filtering
-    console.log(`Road ${idx}: ${data[idx]}`);
+    // update the global vars related to the current selection
+    selectedRoadIdx = idx;
+    filteredAccidents = bikeRoadsAccidents[idx];
 
-    // zoom in to the segments
+    // zoom in to the segments (on the whole road)
     let bounds = L.latLngBounds();
-    road_pollys[idx].forEach((polyline) => {
+    roadsPolylines[idx].forEach((polyline) => {
         bounds.extend(polyline.getBounds());
     });
     map.flyToBounds(bounds);
@@ -53,101 +90,141 @@ const roadClick = (event, data, idx) => {
     // update the road description
     const description = roadInfo(data[idx]);
     aboutRoad.innerHTML = description;
+    // ..and retrieve the real address
     const [long, latt] = data[idx][ROAD_GEO].paths[0][0];
-    getAddress(latt, long).then(({street, suburb, city}) => {
+    getAddress(latt, long).then(({ street, suburb, city }) => {
         const streetName = aboutRoad.querySelector(".bike_road__name");
         streetName.innerHTML = street;
     });
 
-    // make it more visible
+    // highlight selected road
     markRoads(idx);
+
+    // and update all the graphs
+    renderSelection();
 };
 
-const initialize = async (use_clusters = false) => {
-    // load all the data, create necessary points
-    // show loading screen during this
-    // initialize global vars
-    // add all click events..
+/**
+ * Called when the range of visualisation is changed.
+ *
+ * @param {Number} min min year to use
+ * @param {Number} max max year to display
+ * @returns nothing
+ * @todo implement
+ */
+const rangeUpdateCallback = (min, max) => {
+    // first update the information on the info-panel
+    minYearSpan.innerHTML = min;
+    maxYearSpan.innerHTML = max;
 
-    console.log("Starting to load the data...");
+    // then update the displayed data
+    accidents.forEach((a, idx) => {
+        const condition = (min <= a[ACC_YEAR] && a[ACC_YEAR] <= max);
+        filteredAccidents[idx].by_year = condition;
+    });
+
+    // then roads
+    roads.forEach((r, idx) => {
+        const condition = (min <= r[ROAD_YEAR] && r[ROAD_YEAR] <= max);
+        filteredRoads[idx].by_year = condition;
+    })
+
+    // finally render
+    renderSelection();
+};
+
+/**
+ * Initialize the scene.
+ *
+ * Load all data, precompute what can be precomputed, initialize
+ * global variables and related event listeners.
+ *
+ * @param {Boolean} use_clusters (ignored)
+ * @returns nothing
+ * @todo clusters when zooming in...
+ * @todo loading bar? https://loading.io/progress/
+ */
+const initialize = async (use_clusters = false) => {
+    // first, mark the root as loading (to display a nice animation :P )
     document.documentElement.classList.add("loading");
 
     // initialize the map
     map = initMap();
 
-    // load and draw accidents data
-    const accidents = await loadBikeAccidents();
-    console.log({ accidents });
-    const rr = await accidents;
-    console.log({ rr });
-    const accidentsMarkers = initBikeAccident(accidents);
-    // if (use_clusters)
-    //     drawClusteredAccidents(accidents, map);
-    // else
-    //     drawAccidents(accidents, accidentsMarkers, map, null);
+    // load the accidents data
+    accidents = await loadBikeAccidents();
+    accidentsMarkers = initBikeAccident(accidents);
+    filteredAccidents = accidents.map((a) => ({"is_loaded": true}));
 
-    // load and draw bike roads
-    const roads = await loadRoads();
-    const roadsLines = initAllRoads(roads);
-    road_pollys = roadsLines; // TODO: remove
+    // load bike roads
+    roads = await loadRoads();
+    roadsPolylines = initAllRoads(roads);
+    filteredRoads = roads.map((r) => ({"is_loaded": true}));
+
+    // initialize the slider on the map (for years)
     const [minYear, maxYear] = minMaxYear(roads);
-    console.log("minmax", minYear, maxYear);
     initializeSlider(minYear, maxYear, rangeUpdateCallback);
-    displayRoads(map, roads, roadsLines, minYear, maxYear);
 
-    // load and draw bike roads
-    // const [roads, roads_poly] = await loadRoads();
+    // finally render everything
+    renderSelection();
+
+    // precompute which accident belongs to which road - make sure to call after
+    // the initial drawing
+    bikeRoadsAccidents = precomputeRoadAccidents(
+        map,
+        roads,
+        roadsPolylines,
+        accidents
+    );
 };
 
-const minYearSpan = document.querySelector(".about__year--min");
-const maxYearSpan = document.querySelector(".about__year--max");
-const rangeUpdateCallback = (min, max) => {
-    minYearSpan.innerHTML = min;
-    maxYearSpan.innerHTML = max;
-    console.log("TODO");
-};
-
-/* the main: */
+/******************************************************************************
+ *                     M A I N   L O G I C
+ ******************************************************************************/
 
 // first allow switching to dark mode at any time
 document
     .getElementById("app__dark_mode")
     .addEventListener("click", switchDarkMode);
 
-// // initialize map...
-// var map = initMap();
-
-// var bike_data;
-// loadBikeAccidents();
-
-// var road_data, road_pollys, min_year, max_year;
-// loadRoads();
-
+// initialize everythin
 initialize().then(() => {
     console.log("Finisiehd all loading");
     document.documentElement.classList.remove("loading");
     document.documentElement.classList.add("ready");
 });
 
-// drawDonut(donutData, donutAttr, "#sex", 500, 500, 100) // TODO: remove
+// make the resizer available
+const resizer = new Resizer();
+
+// add to map handler for unselecting
+unselectForm.addEventListener("click", (e) => {
+    e.preventDefault();
+    markRoads();
+    resetMap(map);
+    unselectForm.classList.add(unselectHidden);
+    aboutRoad.innerHTML = "";
+});
+
+// add a zoom event to the map, TODO: moveend event
+map.on("zoomend", () => drawAccidents(accidents, accidentsMarkers, map));
+// map.on("moveend", function () {
+//     console.log(map.getCenter().toString());
+//   });
+
+// sample visualisation - TODO: remove
+const margin = { top: 30, right: 30, bottom: 70, left: 60 };
 const donut = new DonutChart(500, 500, 100, "#sex");
 donut.update(donutData, donutAttr);
-
-var ii = true;
-const donutChange = () => {
-    donut.update(ii ? donutDataB : donutData, donutAttr);
-    ii = !ii;
-};
-
-const bp = new BarPlotSwitchable(460, 400, {top: 30, right: 30, bottom: 70, left: 60}, "#age");
+const bp = new BarPlotSwitchable(460, 400, margin, "#age");
 bp.update(donutData, donutAttr);
 
-var jj = true;
-const bpChange = () => {
-    bp.update(jj ? donutDataB : donutData, donutAttr);
-    jj = !jj;
+var randomI = true;
+const change = () => {
+    donut.update(randomI ? donutDataB : donutData, donutAttr);
+    bp.update(randomI ? donutDataB : donutData, donutAttr);
+    randomI = !randomI;
 };
-const change = () => { donutChange(); bpChange(); }
 
 // pricina, stav_ridic -- barplot, simple, rotated
 // vek_skupina -- donut
