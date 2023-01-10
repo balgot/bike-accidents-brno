@@ -446,7 +446,7 @@ a:hover, a:focus, a:visited {
 
 .text__about {
     /* mock */
-    height: 20vh;
+    min-height: 20vh;
     padding: 0 2em;
 }
 

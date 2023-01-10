@@ -138,6 +138,12 @@ const donutData = [
     { a: 8 },
     { a: 9 },
     { a: 9 },
+    { a: 7 },
+    { a: 7 },
+    { a: 7 },
+    { a: 7 },
+    { a: 7 },
+    { a: 7 },
 ];
 const donutDataB = [
     { a: 9 },

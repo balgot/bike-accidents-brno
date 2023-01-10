@@ -125,6 +125,18 @@ const donutChange = () => {
     ii = !ii;
 };
 
+const bp = new BarPlotSwitchable(460, 400, {top: 30, right: 30, bottom: 70, left: 60}, "#age");
+bp.update(donutData, donutAttr);
+
+var jj = true;
+const bpChange = () => {
+    bp.update(jj ? donutDataB : donutData, donutAttr);
+    jj = !jj;
+};
+const change = () => { donutChange(); bpChange(); }
+
 // pricina, stav_ridic -- barplot, simple, rotated
 // vek_skupina -- donut
 // den_v_tydnu, mesic -- https://d3-graph-gallery.com/graph/barplot_button_data_hard.html
+
+// TODO: when deselecting part in checkbox, remove filters in data and then put it back?? or unhighlight everything, or destroy and recompute?
