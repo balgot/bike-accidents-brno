@@ -9,6 +9,7 @@ const unselectHidden = "unselect--invisible";
 const aboutRoad = document.getElementById("about_road");
 const minYearSpan = document.querySelector(".about__year--min");
 const maxYearSpan = document.querySelector(".about__year--max");
+const loadingWhat = document.querySelector("#loading__what");
 const COLOR_ROAD_SELECTED = "blue";
 const COLOR_ROAD_UNSELECTED = "red";
 
@@ -55,7 +56,7 @@ const markRoads = (selectedIdx = null) => {
 const renderSelection = () => {
     // display all the stuff
     drawAccidents(accidents, accidentsMarkers, map, () => true); // TODO: use selectedIdx's instead of function
-    displayRoads(map, roads, roadsPolylines, minYear, maxYear); // TODO: use selectedInx's instead of min, max year
+    displayRoads(map, roads, roadsPolylines, 0, 3000); // TODO: use selectedInx's instead of min, max year
 };
 
 /**
@@ -149,14 +150,17 @@ const initialize = async (use_clusters = false) => {
     document.documentElement.classList.add("loading");
 
     // initialize the map
+    loadingWhat.innerHTML = "initializing map";
     map = initMap();
 
     // load the accidents data
+    loadingWhat.innerHTML = "loading accidents";
     accidents = await loadBikeAccidents();
     accidentsMarkers = initBikeAccident(accidents);
     filteredAccidents = accidents.map((a) => ({"is_loaded": true}));
 
     // load bike roads
+    loadingWhat.innerHTML = "loading bike roads";
     roads = await loadRoads();
     roadsPolylines = initAllRoads(roads);
     filteredRoads = roads.map((r) => ({"is_loaded": true}));
@@ -170,6 +174,7 @@ const initialize = async (use_clusters = false) => {
 
     // precompute which accident belongs to which road - make sure to call after
     // the initial drawing
+    loadingWhat.innerHTML = "precomputing stuff";
     bikeRoadsAccidents = precomputeRoadAccidents(
         map,
         roads,
@@ -189,6 +194,7 @@ document
 
 // initialize everythin
 initialize().then(() => {
+    loadingWhat.innerHTML = "done";
     console.log("Finisiehd all loading");
     document.documentElement.classList.remove("loading");
     document.documentElement.classList.add("ready");
@@ -231,3 +237,4 @@ const change = () => {
 // den_v_tydnu, mesic -- https://d3-graph-gallery.com/graph/barplot_button_data_hard.html
 
 // TODO: when deselecting part in checkbox, remove filters in data and then put it back?? or unhighlight everything, or destroy and recompute?
+// TODO: initialize dark mode button...

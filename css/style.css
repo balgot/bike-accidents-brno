@@ -102,6 +102,43 @@
     --link-visited-color: var(--dark-orange);
 }
 
+/* 480< phone, 768 < tables */
+
+/* mobile phone */
+/* TODO: remove important **/
+@media screen and (max-width: 480px) {
+    :root {
+        --size-font-big: 1.3em;
+    }
+
+    .app {
+        overflow: auto !important;
+    }
+
+    .app__header {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 999999999 !important; /* due to leaflet thigs.. */
+    }
+
+    .app__main {
+        flex-direction: column !important;
+    }
+
+    .app__map {
+        height: calc(80vh - var(--header-height)) !important;
+        width: 100% !important;
+    }
+
+    .resizer--left {
+        width: auto !important;
+    }
+
+    .resizer--mid {
+        display: none !important;
+    }
+}
+
 
 /*******************************************************************************
  *                           G E N E R A L
@@ -285,7 +322,7 @@ a:hover, a:focus, a:visited {
 /* todo: somthing about !important */
 :root .app__main, :root.loading .app__main {
     visibility: hidden !important;
-    height: 0;
+    height: 0;  /* do not tamper with scrolling on preloader */
 }
 
 :root .preloader, :root.loading .preloader {
@@ -294,6 +331,7 @@ a:hover, a:focus, a:visited {
 
 :root.ready .app__main {
     visibility: visible !important;
+    height: auto;
 }
 
 :root.ready .preloader {
@@ -540,3 +578,5 @@ a:hover, a:focus, a:visited {
 .highlight--donut {
     filter: brightness(150%);
 }
+
+/* TODO: mobile: idk about data not showing up... */

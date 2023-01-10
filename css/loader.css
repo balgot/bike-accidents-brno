@@ -1,6 +1,6 @@
 /* loading part from: https://codepen.io/thetallweeks/pen/yybGra */
 .preloader .loading {
-    font-size: 2em;
+    font-size: var(--size-font-big);
 }
 
 .preloader .loading:after {
@@ -11,6 +11,11 @@
     animation: ellipsis steps(4, end) 900ms infinite;
     content: "\2026"; /* ascii code for the ellipsis character */
     width: 0px;
+}
+
+.preloader .loading__what {
+    color: var(--color-font-secondary);
+    font-size: 1em;
 }
 
 @keyframes ellipsis {
@@ -35,11 +40,21 @@
     --bike-height: 400px;
     --bike-bar-width: 12px;
     --tdf-yellow: #e4c32f;
+    --bike-black: rgb(44, 44, 44);
+    --bike-grey: rgb(102, 102, 102);
+    --bike-lt-grey: rgb(155, 155, 155);
     --time-pedals: 2s;
     --time-wheels: 3s;
 
+    transform: translateX(25px);
     width: var(--bike-width);
     height: var(--bike-height);
+}
+
+@media screen and (max-width: 480px) {
+    .preloader .bike {
+        scale: .5;
+    }
 }
 
 .preloader .part {
@@ -104,7 +119,7 @@
     height: 0;
     width: 10px;
     position: absolute;
-    border-bottom: 110px solid black;
+    border-bottom: 110px solid var(--bike-black);
     border-left: 0px solid transparent;
     border-right: 22px solid transparent;
     border-radius: 10px 0 10px 0;
@@ -118,7 +133,7 @@
     height: 200px;
     margin-top: 30px;
     position: absolute;
-    background: grey;
+    background: var(--bike-grey);
     transform: rotate(-15deg);
 }
 
@@ -127,8 +142,8 @@
     height: 200px;
     margin-top: 170px;
     border-radius: 100%;
-    border: 5px solid lightgrey;
-    box-shadow: 0 0 0 5px grey;
+    border: 5px solid var(--bike-lt-grey);
+    box-shadow: 0 0 0 5px var(--bike-grey);
     animation: wheelspin var(--time-wheels) linear infinite;
 }
 
@@ -145,7 +160,7 @@
     height: 200px;
     margin-left: 98px;
     position: absolute;
-    background: grey;
+    background: var(--bike-grey);
 }
 
 .preloader .wheel .spoke:nth-child(2) {
@@ -175,7 +190,7 @@
     height: 25px;
     margin-top: 265px;
     position: absolute;
-    background: grey;
+    background: var(--bike-grey);
     border-radius: 100%;
 }
 
@@ -193,7 +208,7 @@
     margin-top: 45px;
     margin-left: 412px;
     position: absolute;
-    background: grey;
+    background: var(--bike-grey);
     transform: rotate(-19deg);
 }
 
@@ -203,7 +218,7 @@
     margin-left: 374px;
     margin-top: 40px;
     transform: rotate(-19deg);
-    background: lightgrey;
+    background: var(--bike-lt-grey);
 }
 
 .preloader .prehandle {
@@ -212,7 +227,7 @@
     margin-left: 394px;
     margin-top: -45px;
     transform: rotate(42deg);
-    background: lightgrey;
+    background: var(--bike-lt-grey);
 }
 
 .preloader .handle {
@@ -221,7 +236,7 @@
     margin-left: 400px;
     margin-top: -45px;
     position: absolute;
-    background: black;
+    background: var(--bike-black);
     border-radius: 100%;
 }
 
@@ -237,7 +252,7 @@
 .preloader .inside {
     width: 9px;
     height: 9px;
-    background: grey;
+    background: var(--bike-grey);
     border-radius: 100%;
     margin-left: 3.5px;
     margin-top: 2.4px;
@@ -247,14 +262,14 @@
     height: 80px;
     margin-top: -39px;
     margin-left: -37px;
-    border: 5px solid black;
+    border: 5px solid var(--bike-black);
     border-radius: 100%;
 }
 .preloader .pedalstem {
     width: 12px;
     height: 80px;
     margin-left: 2px;
-    background: lightgrey;
+    background: var(--bike-lt-grey);
     border-radius: 10px 10px 0 0;
 
     transform-origin: 6px 7px;
@@ -272,6 +287,7 @@
     margin-top: 70px;
     margin-left: -12px;
     background: black;
+    border: 2px solid var(--tdf-yellow);
 }
 .preloader .pedalbase.front {
     animation: pedalbase-front var(--time-pedals) linear infinite;
