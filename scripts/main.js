@@ -5,7 +5,6 @@ var road_pollys;  // TODO: remove
 var map; // TODO: remove
 
 const initialize = async (use_clusters = false) => {
-    return;  // TODO: remove
     // load all the data, create necessary points
     // show loading screen during this
     // initialize global vars
@@ -62,4 +61,4 @@ initialize().then(() => {
     document.documentElement.classList.add("ready");
 })
 
-// TODO: add preloader and use async calls.. https://codepen.io/balgot/pen/gOjgEQm
+drawDonut(donutData, donutAttr, "#sex", 500, 500, 100) // TODO: remove

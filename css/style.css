@@ -360,6 +360,7 @@ a:hover, a:focus, a:visited {
 
 .text {
     overflow: auto;
+    padding-bottom: 2em;
 }
 
 .text__heading {
@@ -390,6 +391,7 @@ a:hover, a:focus, a:visited {
 .text__about {
     /* mock */
     height: 20vh;
+    padding: 0 2em;
 }
 
 
@@ -478,3 +480,7 @@ a:hover, a:focus, a:visited {
 .text__entry { height: 20vh; }
 
 .chart {}
+
+.highlight--donut {
+    filter: brightness(150%);
+}
