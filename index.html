@@ -1,29 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Analysis of bike accidents in Brno.">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Analysis of bike accidents in Brno." />
 
     <title>Bike Accidents in Brno</title>
     <link href="assets/pics/favicon.ico" rel="icon" media="(prefers-color-scheme: light)" type="image/x-icon" />
     <link href="assets/pics/favicon--dark_mode.ico" rel="icon" type="image/x-icon" />
 
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/slider.css">
-    <link rel="stylesheet" href="css/loader.css">
-
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/slider.css" />
+    <link rel="stylesheet" href="css/loader.css" />
 
     <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
 
     <!-- LEAFLET -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+        integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+        integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         /* ??? */
@@ -32,26 +36,23 @@
             height: 100%;
         }
 
-        path.slice{
-            stroke-width:2px;
+        path.slice {
+            stroke-width: 2px;
         }
 
-        polyline{
-            opacity: .3;
+        polyline {
+            opacity: 0.3;
             stroke: black;
             stroke-width: 2px;
             fill: none;
         }
     </style>
-
-
 </head>
+
 <body>
     <div class="app">
         <header class="app__header header">
-            <h1 class="header__heading">
-                Bike Accidents in Brno
-            </h1>
+            <h1 class="header__heading">Bike Accidents in Brno</h1>
             <div class="header__controls">
                 <button id="app_modal__btn" class="app__about header__button modal__button">
                     About
@@ -68,28 +69,32 @@
                 <span class="modal__close">&times;</span>
                 <h1 class="modal__heading">Bike Accidents in Brno</h1>
                 <p class="modal__text">
-                    This is a vizualization of Bike Accidents in Brno, extracted
-                    from public data by <a href="https://data.brno.cz/">data.brno.cz</a>
+                    This is a vizualization of Bike Accidents in Brno,
+                    extracted from public data by
+                    <a href="https://data.brno.cz/">data.brno.cz</a>
                 </p>
                 <p class="modal__text">
-                    This was developed as a final project from <em>FI:PV251</em>
-                    in autumn 2022. For more info about the project, or to access
-                    the source code and some documentation, refer to
+                    This was developed as a final project from
+                    <em>FI:PV251</em>
+                    in autumn 2022. For more info about the project, or to
+                    access the source code and some documentation, refer to
                     <a href="https://github.com/balgot/bike-accidents-brno.git">this GitHub repo.</a>
                 </p>
 
                 <div class="modal__instructions instructions">
                     <em class="instructions__note">Note</em>
                     <p class="instructions__text">
-                        To view data corresponding to the particular bike road, select
-                        it on the map, and optionally, filter out the desired content.
+                        To view data corresponding to the particular bike
+                        road, select it on the map, and optionally, filter
+                        out the desired content.
                     </p>
                 </div>
 
                 <p class="modal__text">
-                    If you encounter any errors related to the map, please report
-                    them on <a href="https://www.openstreetmap.org/fixthemap">
-                    openstreetmap bug tracker</a>.
+                    If you encounter any errors related to the map, please
+                    report them on
+                    <a href="https://www.openstreetmap.org/fixthemap">
+                        openstreetmap bug tracker</a>.
                 </p>
 
                 <p class="modal__author modal__text">
@@ -162,7 +167,7 @@
                 <form class="slider">
                     <div class="range-price">
                         <label for="min">From</label>
-                        <input type="number" name="min" value="300">
+                        <input type="number" name="min" value="300" />
                     </div>
 
                     <div class="range">
@@ -170,14 +175,14 @@
                             <span class="range-selected"></span>
                         </div>
                         <div class="range-input">
-                            <input type="range" class="min" min="0" max="1000" value="300" step="10">
-                            <input type="range" class="max" min="0" max="1000" value="700" step="10">
+                            <input type="range" class="min" min="0" max="1000" value="300" step="10" />
+                            <input type="range" class="max" min="0" max="1000" value="700" step="10" />
                         </div>
                     </div>
 
                     <div class="range-price">
                         <label for="max">To</label>
-                        <input type="number" name="max" value="700">
+                        <input type="number" name="max" value="700" />
                     </div>
                 </form>
             </section>
@@ -187,164 +192,55 @@
             </div>
 
             <section class="app__text resizer__right text">
-                <h1 class="text__heading">
-                    Sumavska
-                </h1>
-                <p id="about_road"></p>
-                <div class="filter">
-
+                <div class="text__heading">
+                    <h1 class="about">
+                        Brno <span class="about__year">(2012 - 2023)</span>
+                    </h1>
+                    <a class="filters__btn"><i class="fa-solid fa-filter"></i><span
+                            class="filters__btn-text">Filters</span></a>
                 </div>
-                <p class="description__more">Map controls...</p>
 
-                <div class="descpription__data text">
-                    <h1 class="text__header">Selected Bike Road</h1>
-                    <p id="selected"></p>
-                    <div class="text__about">
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                        Temporibus, natus beatae distinctio possimus earum ea iusto
-                        pariatur rem, ut iure corporis sint nemo ullam obcaecati
-                        debitis rerum odio quas sequi!
-                    </div>
+                <form class="filters filters--hidden">
+                    <ul class="filters__ul">
+                        <li class="filters__li">
+                            <label for="filter__line">Linechart</label>
+                            <input type="checkbox" name="linechart" id="filter__line" checked />
+                        </li>
+                        <li class="filters__li">
+                            <label for="filter__age">Age distribution</label>
+                            <input type="checkbox" name="age" id="filter__age" checked />
+                        </li>
+                        <li class="filters__li">
+                            <label for="filter__sex">Sex</label>
+                            <input type="checkbox" name="sex" id="filter__sex" checked />
+                        </li>
+                    </ul>
+                </form>
 
-                    <div class="text__entry age">
-                        <div id="piechart" class="age__chart chart"></div>
-                        <div class="age__about">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                            Commodi fugiat porro amet tenetur.
-                        </div>
-                    </div>
+                <p id="about_road"></p>
 
-                    <div class="text__entry age">
-                        <div id="piechart" class="age__chart chart"></div>
-                        <div class="age__about">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                            Commodi fugiat porro amet tenetur.
-                        </div>
-                    </div>
+                <div class="text__about linechart">
+                    <p>LineChart</p>
+                    Lorem ipsum dolor, sit amet consectetur adipisicing
+                    elit. Temporibus, natus beatae distinctio possimus
+                    earum ea iusto pariatur rem, ut iure corporis sint
+                    nemo ullam obcaecati debitis rerum odio quas sequi!
+                </div>
 
-                    <div class="text__entry age">
-                        <div id="piechart" class="age__chart chart"></div>
-                        <div class="age__about">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                            Commodi fugiat porro amet tenetur.
-                        </div>
-                    </div>
+                <div class="text__about age">
+                    <p>Age</p>
+                    Lorem ipsum dolor, sit amet consectetur adipisicing
+                    elit. Temporibus, natus beatae distinctio possimus
+                    earum ea iusto pariatur rem, ut iure corporis sint
+                    nemo ullam obcaecati debitis rerum odio quas sequi!
+                </div>
 
-                    <div class="text__entry age">
-                        <div id="piechart" class="age__chart chart"></div>
-                        <div class="age__about">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                            Commodi fugiat porro amet tenetur.
-                        </div>
-                    </div>
-
-                    <div class="text__entry age">
-                        <div id="piechart" class="age__chart chart"></div>
-                        <div class="age__about">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                            Commodi fugiat porro amet tenetur.
-                        </div>
-                    </div>
-
-                    <div class="text__entry age">
-                        <div id="piechart" class="age__chart chart"></div>
-                        <div class="age__about">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                            Commodi fugiat porro amet tenetur.
-                        </div>
-                    </div>
-
-                    <div class="text__entry age">
-                        <div id="piechart" class="age__chart chart"></div>
-                        <div class="age__about">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                            Commodi fugiat porro amet tenetur.
-                        </div>
-                    </div>
-
-                    <div class="text__entry age">
-                        <div id="piechart" class="age__chart chart"></div>
-                        <div class="age__about">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                            Commodi fugiat porro amet tenetur.
-                        </div>
-                    </div>
-
-                    <div class="text__entry age">
-                        <div id="piechart" class="age__chart chart"></div>
-                        <div class="age__about">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                            Commodi fugiat porro amet tenetur.
-                        </div>
-                    </div>
-
-                    <div class="text__entry age">
-                        <div id="piechart" class="age__chart chart"></div>
-                        <div class="age__about">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                            Commodi fugiat porro amet tenetur.
-                        </div>
-                    </div>
-
-                    <div class="text__entry age">
-                        <div id="piechart" class="age__chart chart"></div>
-                        <div class="age__about">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                            Commodi fugiat porro amet tenetur.
-                        </div>
-                    </div>
-
-                    <div class="text__entry sex">
-                        <div class="sex__chart chart"></div>
-                        <div class="sex__about">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                            Commodi fugiat porro amet tenetur.
-                        </div>
-                    </div>
-
-                    <div class="text__entry age">
-                        <div class="age__chart chart"></div>
-                        <div class="age__about">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                            Commodi fugiat porro amet tenetur.
-                        </div>
-                    </div>
-
-                    <div class="text__entry sex">
-                        <div class="sex__chart chart"></div>
-                        <div class="sex__about">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                            Odit culpa <em>deserunt</em> sunt in voluptatibus porro quibusdam
-                            hic error a officiis non, <em>autem</em> tenetur beatae voluptas?
-                            Commodi fugiat porro amet tenetur.
-                        </div>
-                    </div>
+                <div class="text__about sex">
+                    <p>Sex</p>
+                    Lorem ipsum dolor, sit amet consectetur adipisicing
+                    elit. Temporibus, natus beatae distinctio possimus
+                    earum ea iusto pariatur rem, ut iure corporis sint
+                    nemo ullam obcaecati debitis rerum odio quas sequi!
                 </div>
             </section>
         </main>
@@ -356,6 +252,7 @@
     <script src="scripts/graphs/pie_chart.js"></script>
 
     <script src="scripts/utils/geocluster.js"></script>
+    <script src="scripts/utils/filters.js"></script>
     <script src="scripts/utils/modal.js"></script>
     <script src="scripts/utils/range_slider.js"></script>
     <script src="scripts/utils/resizer.js"></script>
@@ -364,4 +261,5 @@
     <script src="scripts/common.js"></script>
     <script src="scripts/main.js"></script>
 </body>
+
 </html>

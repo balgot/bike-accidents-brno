@@ -21,6 +21,10 @@ const TRANS_ROAD_TYPE = {
     "Ostatní": "Other"
 }
 
+
+const traslateRoadType = (type) => TRANS_ROAD_TYPE[type] || type;
+
+
 ROAD_TYPE_IMGS = [
     ["https://upload.wikimedia.org/wikipedia/commons/b/b9/Cyklopruh_Stra%C5%A1nice_3.JPG"],
     ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3Rqnd1ee-gQ_23TWmSB6cP1YCk4z3egMh3PWmPGjn5KiWeaBfUXmr6l4467GM3YxtoVM&usqp=CAU"],

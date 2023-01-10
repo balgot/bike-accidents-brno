@@ -245,6 +245,7 @@ a:hover, a:focus, a:visited {
 .header__controls {
     justify-self: flex-end;
     display: flex;
+    align-items: center;
     flex-direction: row;
     padding: 0 .5em;
     column-gap: .3em;
@@ -257,8 +258,9 @@ a:hover, a:focus, a:visited {
     border: none;
     cursor: pointer;
     background-color: var(--color-secondary);
-    padding: .1em 1.2em;
+    padding: 1.2em;
     color: var(--color-font-secondary);
+    height: fit-content;
 }
 
 .header__button:hover {
@@ -359,6 +361,23 @@ a:hover, a:focus, a:visited {
 .text {
     overflow: auto;
 }
+
+.text__heading {
+    display: flex;
+    background: var(--color-terciary);
+    color: var(--color-font-terciary);
+    padding-left: 2em;
+    position: relative;
+}
+
+.about {
+    margin: 0.5em;
+}
+
+.about__year {
+    font-size: .7em;
+}
+
 .app__text {
     height: calc(100vh - var(--header-height));
     overflow-y: auto;
@@ -373,7 +392,86 @@ a:hover, a:focus, a:visited {
     height: 20vh;
 }
 
-/** also filters here **/
+
+
+/*******************************************************************************
+ *                           F I L T E R S
+ ******************************************************************************/
+
+.filters__btn {
+    margin-left: auto;
+    display: flex;
+    column-gap: .5em;
+    text-decoration: none;
+    align-items: center;
+    padding: 0 1em 0 2em;
+    color: inherit;
+    cursor: pointer;
+    transition: all 0.3 ease-in-out;
+    user-select: none;
+}
+
+.filters__btn > i {
+    width: 1em;
+}
+
+.filters__btn:hover, .filters__btn:visited {
+    color: inherit;
+}
+
+.filters__btn:hover {
+    background: var(--color-font-terciary);
+    color: var(--color-terciary);
+}
+
+.filters__btn--selected {
+    background: var(--color-font-terciary);
+    color: var(--color-terciary);
+}
+
+.filters__btn--selected:hover {
+    border: 1px solid var(--color-terciary);
+}
+
+.filters__btn-text {
+    width: 4em;
+}
+
+.filters {
+    transition:
+        height .5s ease-in-out,
+        padding-top .5s ease,
+        padding-bottom .5s ease;
+    height: max(1em, min-content);
+    background: var(--color-font-terciary);
+    color: var(--color-terciary);
+    margin-bottom: 2em;
+    padding: 1.5em;
+    /* max-height: 100vh;  for animation */
+}
+
+.filters--hidden {
+    height: 0;
+    max-height: 0;
+    padding: 0;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+    overflow: hidden;
+}
+
+.filters__ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.filters__li {
+    display: flex;
+    flex-direction: row-reverse;
+    column-gap: .3em;
+}
+
 /*******************************************************************************
  *                            C H A R T S
  ******************************************************************************/
