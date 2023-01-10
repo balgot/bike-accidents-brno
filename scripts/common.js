@@ -53,11 +53,11 @@ const resetMap = (map) => map.flyTo(BrnoPosition, MAP_ZOOM);
  */
 const getAddress = (lattitude, longitude) => {
     if (DBG)
-        return new Promise({
+        return  new Promise((res, rej) => ({
             street: "Debug Street",
             suburb: "Debug I.",
             city: "Debug City"
-        });
+        }));
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lattitude}&lon=${longitude}&zoom=17&accept-language=en`;
     const headers = { "User-Agent": "bike-accidents-in-brno" };
     return fetch(url, { headers })
