@@ -354,6 +354,62 @@ a:hover, a:focus, a:visited {
     height: 100%;
 }
 
+.unselect {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px;
+    -webkit-box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75);
+    z-index: 7777777;
+}
+
+.unselect--invisible {
+    display: none;
+}
+
+.unselect__btn {
+    background: white;
+    border: none;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.unselect__btn:hover {
+    background: #f4f4f4;
+}
+
+.unselect__btn > i {
+    color: var(--red);
+    width: 30px;  /* todo */
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn {
+    display: flex;
+}
+
+.btn__text {
+    width: 0;
+    overflow: hidden;
+    padding: 0;
+    /* width: 0;
+    max-width: 0;
+    overflow: hidden; */
+}
+
+.btn:hover > .btn__text {
+    padding: 0 .5em;
+    width: min-content;
+}
+
 /*******************************************************************************
  *                          D E S C R I P T I O N
  ******************************************************************************/

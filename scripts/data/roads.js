@@ -131,44 +131,7 @@ const roadInfo = (road) => {
         </p>
         `
     ];
-    return options[Math.floor(Math.random() * options.length)];
-}
-
-
-/**
- * Handle road click event.
- *
- * @param {ClickEvent} event
- *      click event, with `event.taget` pointing to the segment
- * @param {[BikeRoads]} data
- *      bike road data
- * @param {Number} idx
- *      index of which road got clicked on
- * @returns nothing
- * @todo get all polyline
- */
-const roadClick = (event, data, idx) => {
-    const segment = event.target;  // which polyline
-
-    // for now just console log, TODO: do sth productive here, like filtering
-    console.log(`Road ${idx}: ${data[idx]}`);
-
-    // zoom in to the segments
-    let bounds = L.latLngBounds();
-    road_pollys[idx].forEach((polyline) => {
-        bounds.extend(polyline.getBounds());
-    });
-    map.flyToBounds(bounds);
-
-    // TODO: move somewheer else
-    const target = document.getElementById("about_road");
-    target.innerHTML = roadInfo(data, idx);
-
-    // TODO: make it more visible
-    road_pollys.forEach((poly, i) => {
-        const color = i == idx ? "blue" : "red";
-        poly.forEach(p => p.setStyle({color}));
-    });
+    return [options[Math.floor(Math.random() * options.length)], streetName];
 }
 
 /**

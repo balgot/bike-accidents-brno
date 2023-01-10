@@ -1,3 +1,6 @@
+const BrnoPosition = [49.19522, 16.60796];
+const MAP_ZOOM = 13;
+
 /**
  * Initialize the Leaflet map.
  *
@@ -8,8 +11,8 @@
  *      https://wiki.openstreetmap.org/wiki/Raster_tile_providers
  */
 const initMap = () => {
-    const Brno = [49.19522, 16.60796];
-    const map = L.map('map').setView(Brno, 13);
+
+    const map = L.map('map').setView(BrnoPosition, MAP_ZOOM);
 
     // add a layer with data
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -19,6 +22,14 @@ const initMap = () => {
 
     return map;
 };
+
+/**
+ * Reset the map view.
+ *
+ * @param {L.map} map
+ * @returns nothing
+ */
+const resetMap = (map) => map.flyTo(BrnoPosition, MAP_ZOOM);
 
 /**
  * Get the address of the point using the *nominatim* service.
