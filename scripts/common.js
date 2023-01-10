@@ -36,7 +36,7 @@ const resetMap = (map) => map.flyTo(BrnoPosition, MAP_ZOOM);
  *
  * @param {Number} lattitude WGS84 projection
  * @param {Number} longitude WGS84 projection
- * @returns {{street: String, suburb: String, city: String}}
+ * @returns {Promise<{street: String, suburb: String, city: String}>}
  *      object with street, suburb and city as strings
  *      on error, "unknown" values are returned
  *
@@ -51,12 +51,19 @@ const resetMap = (map) => map.flyTo(BrnoPosition, MAP_ZOOM);
  *      * something with API limit?
  *      * error handling?
  */
-const getAddress = async (lattitude, longitude) => {
+const getAddress = (lattitude, longitude) => {
+    if (DBG)
+        return new Promise({
+            street: "Debug Street",
+            suburb: "Debug I.",
+            city: "Debug City"
+        });
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lattitude}&lon=${longitude}&zoom=17&accept-language=en`;
     const headers = { "User-Agent": "bike-accidents-in-brno" };
     return fetch(url, { headers })
       .then((res) => res.json())
       .then((res) => {
+          console.log("getAddress", res);
           const street = res.address?.road || "";
           const suburb = res.address?.suburb || "";
           const city = res.address?.city || "";

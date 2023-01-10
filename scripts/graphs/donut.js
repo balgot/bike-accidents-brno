@@ -68,14 +68,15 @@ class DonutChart {
             .attr("fill", (d) => color(d.data[0])) // TODO: corrent?
             .attr("stroke", "var(--color-font-primary)")
             .style("stroke-width", "2px")
-            .style("opacity", 0.7)
             .on("click", (e, segment) => {
                 e.target.classList.toggle("highlight--donut");
                 callback(segment.data[0], e.target.classList.contains("highlight--donut"));
             })
+            .style("opacity", 0)
             .transition()
-            .delay((d, i) => i * 500)
+            .delay((d, i) => i * 500 - 50)
             .duration(500)
+            .style("opacity", 0.7)
             .attrTween('d', d => {
                 const i = d3.interpolate(d.startAngle+0.1, d.endAngle);
                 return t => {

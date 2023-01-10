@@ -19,8 +19,8 @@ const loadRoads = async () => {
     try {
         // make sure to use d3v5
         const data = await d3.json(BIKE_ROADS_URL);
-        // only those with geometry
-        const filtered_data = data.features.filter((val) => val[ROAD_GEO]);
+        // only those with geometry and valid year
+        const filtered_data = data.features.filter((val) => (val[ROAD_GEO] && val.attributes[ROAD_YEAR]));
         // preprocess a bit
         const used = filtered_data.map((elem) => {
             let attr = elem.attributes;
@@ -67,6 +67,9 @@ const initAllRoads = (data) => {
  */
 const minMaxYear = (data) => {
     const thisYear = new Date().getFullYear();
+    // console.log("Min Year IS");
+    // console.log(data.reduce((p, e) => Math.min(p, e[ROAD_YEAR])));
+    // data.forEach((d) => console.log(d[ROAD_YEAR]));
     return data.reduce(([min, max], road) => [
         Math.min(min, road[ROAD_YEAR]),
         Math.max(max, road[ROAD_YEAR]),
@@ -109,29 +112,30 @@ const displayRoads = (map, data, polys, from, to) => {
  *
  * @param {BikeRoad} road
  *      bike road to describe
- * @returns {[String, String]}
- *      the description with the address
+ * @returns {String}
+ *      the description
  *
+ * @note the street is not filled in
  * @todo add more options, variations
  * @idea add pictures of how it might look like?
  */
 const roadInfo = (road) => {
-    const streetName = "Random Street";  // TODO: deduce, see common.js
     const year = road[ROAD_YEAR];
     const len = road[ROAD_LENGTH];
-    const _type = road[ROAD_TYPE];  // TODO: translate
+    const _type = road[ROAD_TYPE];
     const options = [
         `
         <p class="bike_road">
-            Bike Road <span class="bike_road__name">${streetName}</span>
+            Bike Road <span class="bike_road__name"></span>
             was finished in <span class="bike_road__year">${year}</span>.
             The length of the segment is
-            <span class="bike_road__length">${len}</span>.
-            The project was: <span class="bike_road__project">${_type}</span>.
+            <span class="bike_road__length">${len}</span> metres.
+            The project was:
+            <span class="bike_road__project">${translate(_type)}</span>.
         </p>
         `
     ];
-    return [options[Math.floor(Math.random() * options.length)], streetName];
+    return options[Math.floor(Math.random() * options.length)];
 }
 
 /**

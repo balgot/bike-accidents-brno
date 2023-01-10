@@ -1,5 +1,5 @@
 /** contains the main logic of the app, to be loaded as last **/
-
+var DBG = true;
 var road_pollys; // TODO: remove
 var map; // TODO: remove
 
@@ -51,9 +51,13 @@ const roadClick = (event, data, idx) => {
     unselectForm.classList.remove(unselectHidden);
 
     // update the road description
-    const [description, address] = roadInfo(data[idx]);
+    const description = roadInfo(data[idx]);
     aboutRoad.innerHTML = description;
-    console.log({ about: aboutRoad.innerHTML });
+    const [long, latt] = data[idx][ROAD_GEO].paths[0][0];
+    getAddress(latt, long).then(({street, suburb, city}) => {
+        const streetName = aboutRoad.querySelector(".bike_road__name");
+        streetName.innerHTML = street;
+    });
 
     // make it more visible
     markRoads(idx);
@@ -87,10 +91,20 @@ const initialize = async (use_clusters = false) => {
     const roadsLines = initAllRoads(roads);
     road_pollys = roadsLines; // TODO: remove
     const [minYear, maxYear] = minMaxYear(roads);
+    console.log("minmax", minYear, maxYear);
+    initializeSlider(minYear, maxYear, rangeUpdateCallback);
     displayRoads(map, roads, roadsLines, minYear, maxYear);
 
     // load and draw bike roads
     // const [roads, roads_poly] = await loadRoads();
+};
+
+const minYearSpan = document.querySelector(".about__year--min");
+const maxYearSpan = document.querySelector(".about__year--max");
+const rangeUpdateCallback = (min, max) => {
+    minYearSpan.innerHTML = min;
+    maxYearSpan.innerHTML = max;
+    console.log("TODO");
 };
 
 /* the main: */
