@@ -23,7 +23,7 @@ class Resizer {
         // Get the current mouse position
         this.mouseX = e.clientX;
         this.mouseY = e.clientY;
-        this.leftWidth = leftSide.getBoundingClientRect().width;
+        this.leftWidth = this.leftSide.getBoundingClientRect().width;
 
         // Attach the listeners to `document`
         document.addEventListener('mousemove', this.mouseMoveHandler);
