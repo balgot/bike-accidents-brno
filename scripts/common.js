@@ -11,12 +11,13 @@ const MAP_ZOOM = 13;
  *      https://wiki.openstreetmap.org/wiki/Raster_tile_providers
  */
 const initMap = () => {
-    const map = L.map('map').setView(BrnoPosition, MAP_ZOOM);
+    const map = L.map("map").setView(BrnoPosition, MAP_ZOOM);
 
     // add a layer with data
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        attribution:
+            '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
 
     return map;
@@ -52,24 +53,23 @@ const resetMap = (map) => map.flyTo(BrnoPosition, MAP_ZOOM);
  */
 const getAddress = (lattitude, longitude) => {
     if (DBG)
-        return  new Promise((res, rej) => ({
+        return new Promise((res, rej) => ({
             street: "Debug Street",
             suburb: "Debug I.",
-            city: "Debug City"
+            city: "Debug City",
         }));
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lattitude}&lon=${longitude}&zoom=17&accept-language=en`;
     const headers = { "User-Agent": "bike-accidents-in-brno" };
     return fetch(url, { headers })
-      .then((res) => res.json())
-      .then((res) => {
-          console.log("getAddress", res);
-          const street = res.address?.road || "";
-          const suburb = res.address?.suburb || "";
-          const city = res.address?.city || "";
-          return { street, suburb, city };
-      });
+        .then((res) => res.json())
+        .then((res) => {
+            console.log("getAddress", res);
+            const street = res.address?.road || "";
+            const suburb = res.address?.suburb || "";
+            const city = res.address?.city || "";
+            return { street, suburb, city };
+        });
 };
-
 
 /**
  * Precompute the accidents for each bike roads.
@@ -88,21 +88,33 @@ const getAddress = (lattitude, longitude) => {
  *
  * @note goes over all pairs of roads and accident -- pretty slow
  */
-const precomputeRoadAccidents = (map, bike_data, bike_polys, accidents_data) => {
-    const REQUIRED_MAX_DIST = 25;  // empirically chosen, metres
+const precomputeRoadAccidents = (
+    map,
+    bike_data,
+    bike_polys,
+    accidents_data
+) => {
+    const REQUIRED_MAX_DIST = 25; // empirically chosen, metres
     return bike_data.map((road, idx) => {
         const polys = bike_polys[idx];
-        return accidents_data.map((acc, i) => [acc, i]).filter(([acc, i]) => {
-            const accLocation = L.latLng([acc[ACC_GEO].y, acc[ACC_GEO].x]);
-            const accLocationPX = map.latLngToLayerPoint(accLocation);
-            const closePoints = polys.map(p => p.closestLayerPoint(accLocationPX)).filter(p => !!p);
-            if (!closePoints.length) return false;
-            const closePoint = closePoints.reduce((a, b) => a.distance <= b.distance ? a : b);
-            if (!closePoint) return false;  // nulll TODO?
-            const polyLocation = map.layerPointToLatLng(closePoint);
-            const realDist = accLocation.distanceTo(polyLocation);
-            return realDist <= REQUIRED_MAX_DIST;
-        }).map(([acc, i]) => i);
+        return accidents_data
+            .map((acc, i) => [acc, i])
+            .filter(([acc, i]) => {
+                const accLocation = L.latLng([acc[ACC_GEO].y, acc[ACC_GEO].x]);
+                const accLocationPX = map.latLngToLayerPoint(accLocation);
+                const closePoints = polys
+                    .map((p) => p.closestLayerPoint(accLocationPX))
+                    .filter((p) => !!p);
+                if (!closePoints.length) return false;
+                const closePoint = closePoints.reduce((a, b) =>
+                    a.distance <= b.distance ? a : b
+                );
+                if (!closePoint) return false; // nulll TODO?
+                const polyLocation = map.layerPointToLatLng(closePoint);
+                const realDist = accLocation.distanceTo(polyLocation);
+                return realDist <= REQUIRED_MAX_DIST;
+            })
+            .map(([acc, i]) => i);
     });
 };
 
@@ -112,14 +124,16 @@ const precomputeRoadAccidents = (map, bike_data, bike_polys, accidents_data) => 
  * The detection of dark mode is based on the icon in the header.
  * This needs proper initialisation at the start of the script.
  *
- * @todo initialize the icon at the start
+ * @param {Boolean} forceOn if set, forces the state
+ * @note initialize the icon at the start
  * @link https://webdesign.tutsplus.com/tutorials/color-schemes-with-css-variables-and-javascript--cms-36989.
  */
-const switchDarkMode = () => {
+const switchDarkMode = (forceOn = null) => {
     const STYLE_TO_DARK = "fa-solid fa-moon";
     const STYLE_TO_LIGHT = "fa-solid fa-sun";
     const switcher = document.getElementById("dark_mode__img");
-    const turnDMOn = switcher.className.includes(STYLE_TO_DARK);
+    const turnDMOn =
+        forceOn != null ? forceOn : switcher.className.includes(STYLE_TO_DARK);
 
     // change favicon
     document

@@ -190,7 +190,13 @@ const initialize = async (use_clusters = false) => {
 // first allow switching to dark mode at any time
 document
     .getElementById("app__dark_mode")
-    .addEventListener("click", switchDarkMode);
+    .addEventListener("click", () => switchDarkMode());
+
+// init the dark mode
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    // by default we start with light
+    switchDarkMode(true);
+}
 
 // initialize everythin
 initialize().then(() => {
