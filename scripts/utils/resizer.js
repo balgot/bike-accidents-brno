@@ -15,10 +15,13 @@ class Resizer {
         // left side width
         this.leftWidth = 0;
 
+        // handlers
+        this.mdown = this.mouseDownHandler.bind(this);
+        this.mmove = this.mouseMoveHandler.bind(this);
+        this.mup = this.mouseUpHandler.bind(this);
+
         // atach event handlers
-        this.resizer.addEventListener("mousedown", (e) =>
-            this.mouseDownHandler(e)
-        );
+        this.resizer.addEventListener("mousedown", this.mdown);
     }
 
     mouseDownHandler(e) {
@@ -28,8 +31,8 @@ class Resizer {
         this.leftWidth = this.leftSide.getBoundingClientRect().width;
 
         // Attach the listeners to `document`
-        document.addEventListener("mousemove", (e) => this.mouseMoveHandler(e));
-        document.addEventListener("mouseup", (e) => this.mouseUpHandler(e));
+        document.addEventListener("mousemove", this.mmove);
+        document.addEventListener("mouseup", this.mup);
     }
 
     mouseMoveHandler(e) {
@@ -58,7 +61,7 @@ class Resizer {
         this.rightSide.style.removeProperty("pointer-events");
 
         // Remove the handlers of `mousemove` and `mouseup`
-        document.removeEventListener("mousemove", this.mouseMoveHandler);
-        document.removeEventListener("mouseup", this.mouseUpHandler);
+        document.removeEventListener("mousemove", this.mmove);
+        document.removeEventListener("mouseup", this.mup);
     }
 }
