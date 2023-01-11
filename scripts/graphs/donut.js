@@ -3,8 +3,16 @@
 class DonutChart {
     constructor(width, height, margin, where) {
         this.radius = Math.min(width, height) / 2 - margin;
-        this.svg = d3
+
+        // first make an outer svg to which we will position everything
+        const outer = d3
             .select(where)
+            .append("svg")
+            .attr("width", "100%")
+            .attr("class", "map__container")
+            .attr("viewBox", `0 0 ${width} ${height}`);
+
+        this.svg = outer
             .append("svg")
             .attr("width", width)
             .attr("height", height)

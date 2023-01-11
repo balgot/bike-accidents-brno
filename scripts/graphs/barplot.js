@@ -5,12 +5,23 @@ class BarPlotSwitchable {
         this.width = width - margin.left - margin.right;
         this.height = height - margin.top - margin.bottom;
 
-        // append the svg object to the body of the page
-        this.svg = d3
+        // ...
+        const usedWidth = width + margin.left + margin.right;
+        const usedHeight = height + margin.top + margin.bottom;
+
+        // first make an outer svg to which we will position everything
+        const outer = d3
             .select(where)
             .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
+            .attr("width", "100%")
+            .attr("class", "map__container")
+            .attr("viewBox", `0 0 ${usedWidth} ${usedHeight}`);
+
+        // append the svg object to the body of the page
+        this.svg = outer
+            .append("svg")
+            .attr("width", usedWidth)
+            .attr("height", usedHeight)
             .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 

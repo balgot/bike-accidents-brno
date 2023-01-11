@@ -225,7 +225,7 @@ map.on("zoomend", () => drawAccidents(accidents, accidentsMarkers, map));
 //   });
 
 // sample visualisation - TODO: remove
-const margin = { top: 30, right: 30, bottom: 70, left: 60 };
+const margin = { top: 20, right: 0, bottom: 20, left: 20 };
 const donut = new DonutChart(500, 500, 100, "#sex");
 donut.update(donutData, donutAttr);
 const bp = new BarPlotSwitchable(460, 400, margin, "#age");
