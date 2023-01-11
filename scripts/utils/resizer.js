@@ -4,7 +4,7 @@
 class Resizer {
     constructor() {
         // Query the elements
-        this.resizer = document.getElementById('dragMe');
+        this.resizer = document.getElementById("dragMe");
         this.leftSide = this.resizer.previousElementSibling;
         this.rightSide = this.resizer.nextElementSibling;
 
@@ -16,45 +16,50 @@ class Resizer {
         this.leftWidth = 0;
 
         // atach event handlers
-        this.resizer.addEventListener('mousedown', this.mouseDownHandler);
+        this.resizer.addEventListener("mousedown", (e) =>
+            this.mouseDownHandler(e)
+        );
     }
 
     mouseDownHandler(e) {
         // Get the current mouse position
         this.mouseX = e.clientX;
         this.mouseY = e.clientY;
+        console.log(this.resizer, this.leftSide, this.rightSide);
         this.leftWidth = this.leftSide.getBoundingClientRect().width;
 
         // Attach the listeners to `document`
-        document.addEventListener('mousemove', this.mouseMoveHandler);
-        document.addEventListener('mouseup', this.mouseUpHandler);
+        document.addEventListener("mousemove", (e) => this.mouseMoveHandler(e));
+        document.addEventListener("mouseup", (e) => this.mouseUpHandler(e));
     }
 
-    mouseMoveHandler (e) {
+    mouseMoveHandler(e) {
         // How far the mouse has been moved
         const dx = e.clientX - this.mouseX;
         const dy = e.clientY - this.mouseY;
 
-        const newLeftWidth = ((this.leftWidth + dx) * 100) / this.resizer.parentNode.getBoundingClientRect().width;
+        const newLeftWidth =
+            ((this.leftWidth + dx) * 100) /
+            this.resizer.parentNode.getBoundingClientRect().width;
         this.leftSide.style.width = `${newLeftWidth}%`;
-        document.body.style.cursor = 'col-resize';
+        document.body.style.cursor = "col-resize";
 
-        this.leftSide.style.userSelect = 'none';
-        this.leftSide.style.pointerEvents = 'none';
-        this.rightSide.style.userSelect = 'none';
-        this.rightSide.style.pointerEvents = 'none';
-    };
+        this.leftSide.style.userSelect = "none";
+        this.leftSide.style.pointerEvents = "none";
+        this.rightSide.style.userSelect = "none";
+        this.rightSide.style.pointerEvents = "none";
+    }
 
-    mouseUpHandler () {
-        document.body.style.removeProperty('cursor');
+    mouseUpHandler() {
+        document.body.style.removeProperty("cursor");
 
-        this.leftSide.style.removeProperty('user-select');
-        this.leftSide.style.removeProperty('pointer-events');
-        this.rightSide.style.removeProperty('user-select');
-        this.rightSide.style.removeProperty('pointer-events');
+        this.leftSide.style.removeProperty("user-select");
+        this.leftSide.style.removeProperty("pointer-events");
+        this.rightSide.style.removeProperty("user-select");
+        this.rightSide.style.removeProperty("pointer-events");
 
         // Remove the handlers of `mousemove` and `mouseup`
-        document.removeEventListener('mousemove', this.mouseMoveHandler);
-        document.removeEventListener('mouseup', this.mouseUpHandler);
-    };
+        document.removeEventListener("mousemove", this.mouseMoveHandler);
+        document.removeEventListener("mouseup", this.mouseUpHandler);
+    }
 }
