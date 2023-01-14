@@ -225,7 +225,7 @@ map.on("zoomend", () => drawAccidents(accidents, accidentsMarkers, map));
 //   });
 
 // sample visualisation - TODO: remove
-const margin = { top: 20, right: 0, bottom: 20, left: 50 };
+const margin = { top: 20, right: 20, bottom: 20, left: 50 };
 const donut = new DonutChart(500, 500, 100, "#sex");
 donut.update(donutData, donutAttr);
 const bp = new BarPlotSwitchable(460, 400, margin, "#age");
@@ -238,9 +238,32 @@ const change = () => {
     randomI = !randomI;
 };
 
+const line = new LinePlotAccidents(500, 500, margin, "#linechart");
+var data1 = [
+    {ser1: 0.3, ser2: 4},
+    {ser1: 2, ser2: 16},
+    {ser1: 3, ser2: 8}
+ ];
+
+ var data2 = [
+    {ser1: 1, ser2: 7},
+    {ser1: 4, ser2: 1},
+    {ser1: 6, ser2: 8}
+ ];
+ line.update(data1);
+ var one = true;
+ const ch = () => {
+    line.update(one ? data2 : data1);
+    one = !one;
+ }
+
 // pricina, stav_ridic -- barplot, simple, rotated
 // vek_skupina -- donut
 // den_v_tydnu, mesic -- https://d3-graph-gallery.com/graph/barplot_button_data_hard.html
 
 // TODO: when deselecting part in checkbox, remove filters in data and then put it back?? or unhighlight everything, or destroy and recompute?
 // TODO: initialize dark mode button...
+// TODO: loading something when the range/data is recomputed/rendedred..
+// TODO: wider bike roads to click on
+// TODO: remove DBG flag
+// TODO: sunburst, group by whether with or without bike road

@@ -63,6 +63,25 @@ const initBikeAccident = (data) => {
 
 
 /**
+ * Return a description of the accident with only the most important
+ * info.
+ *
+ * @param {Accident} accident
+ * @returns {string} the description
+ * @todo translate
+ */
+const accidentDescription = (accident) => {
+    const attrs = accident.attributes;
+    return `
+    Bike Accident<br/>
+    when: ${attrs[ACC_YEAR]}<br/>
+    why: ${attrs[ACC_REASON]}<br/>
+    what: ${attrs[ACC_DESCRIPTION]}
+    `;
+}
+
+
+/**
  * Handle bike accident click.
  *
  * Show a popup for now and log it.
@@ -77,10 +96,11 @@ const initBikeAccident = (data) => {
  */
 const accidentClick = (event, data, idx) => {
     const target = event.target;  // the marker
-    console.log(event);
-    // target.bindTooltip("my tooltip text").openTooltip();
-    // target.attr({color: "red"});
-    console.log(`Accident click:`, target, idx);
+    console.log(data);
+    console.log(data[idx]);
+    console.log(accidentDescription(data[idx]));
+    // target.bindTooltip(accidentDescription(data[idx])).openTooltip();  // TODO: bind somewhere else
+    // console.log(`Accident click:`, target, idx);
 };
 
 /**
@@ -113,7 +133,7 @@ const drawAccidents = (data, markers, map, doShowFn = null) => {
         return;
     }
 
-    const show = (accident, marker) => (doShowFn == null ? true : doShowFn(accident, marker));
+    const show = (accident, marker) => (doShowFn == null || doShowFn(accident, marker));
     data.forEach((accident, idx) => {
         const marker = markers[idx];
         if (show(accident, marker))
@@ -146,6 +166,14 @@ const drawClusteredAccidents = (data, map, stddev=0.7) => {
                 radius: 3 * cluster.elements.length
             });
         circle.addTo(map);
+        circle.bindTooltip(`
+            Bike Accidents<br/>
+            number: ${cluster.elements.length}<br/>
+            <br/>
+            Zoom-in (or click)<br/>
+            to display details
+        `)
+        .on("click", () => map.flyToBounds(circle.getBounds()));
         return circle;
     });
 };

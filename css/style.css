@@ -502,18 +502,20 @@ a:hover, a:focus, a:visited {
     align-items: center;
     padding: 0 1em 0 2em;
     color: inherit;
+    background: inherit;
     cursor: pointer;
-    transition: all 0.3 ease-in-out;
+    transition: all 0.2s ease-in-out;
     user-select: none;
+    border: none;
 }
 
 .filters__btn > i {
     width: 1em;
 }
 
-.filters__btn:hover, .filters__btn:visited {
+/* .filters__btn:hover, .filters__btn:visited {
     color: inherit;
-}
+} */
 
 .filters__btn:hover {
     background: var(--color-font-terciary);

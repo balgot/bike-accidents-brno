@@ -69,6 +69,7 @@ class DonutChart {
             .outerRadius(radius * 0.9);
 
         // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+        // TODO: nicer animation
         this.svg.selectAll("allSlices")
             .data(data_ready)
             .join("path")

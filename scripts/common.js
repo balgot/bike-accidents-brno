@@ -11,7 +11,9 @@ const MAP_ZOOM = 13;
  *      https://wiki.openstreetmap.org/wiki/Raster_tile_providers
  */
 const initMap = () => {
-    const map = L.map("map").setView(BrnoPosition, MAP_ZOOM);
+    const map = L.map("map", {
+        preferCanvas: true  // for speed with many records, the DOM is slow
+    }).setView(BrnoPosition, MAP_ZOOM);
 
     // add a layer with data
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {

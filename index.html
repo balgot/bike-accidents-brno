@@ -12,19 +12,24 @@
 
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap" />
+
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/slider.css" />
     <link rel="stylesheet" href="css/loader.css" />
 
+    <link rel="preconnect" href="https://d3js.org">
     <script type="text/javascript" src="https://d3js.org/d3.v6.min.js"></script>
-    <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+    <!-- <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script> -->
 
-    <!-- LEAFLET -->
+    <!-- leaflet -->
+    <link rel="preconnect" href="https://unpkg.com">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
         integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
         integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
 
+    <!-- font awesome -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
         integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -54,10 +59,10 @@
         <header class="app__header header">
             <h1 class="header__heading">Bike Accidents in Brno</h1>
             <div class="header__controls">
-                <button id="app_modal__btn" class="app__about header__button modal__button">
+                <button id="app_modal__btn" class="app__about header__button modal__button" name="Display information about this page">
                     About
                 </button>
-                <button id="app__dark_mode" class="header__button app__dark_mode">
+                <button id="app__dark_mode" class="header__button app__dark_mode" name="Switch dark mode">
                     <i class="fa-solid fa-moon" id="dark_mode__img"></i>
                     <span class="dark_mode__text">Change to dark mode</span>
                 </button>
@@ -165,10 +170,10 @@
             <section class="app__map map_area resizer__left">
                 <div class="map" id="map"></div>
 
-                <form class="slider">
+                <div class="slider">
                     <div class="range-price">
-                        <label for="min">From</label>
-                        <input type="number" name="min" value="0" />
+                        <label for="min_year--num">From</label>
+                        <input type="number" id="min_year--num" name="Minimal year to display" value="0" />
                     </div>
 
                     <div class="range">
@@ -182,14 +187,14 @@
                     </div>
 
                     <div class="range-price">
-                        <label for="max">To</label>
-                        <input type="number" name="max" value="3000" />
+                        <label for="max_year--num">To</label>
+                        <input type="number" id="max_year--num" name="Maximal year to display" value="3000" />
                     </div>
-                </form>
+                </div>
 
-                <form class="unselect unselect--invisible">
+                <div class="unselect unselect--invisible">
                     <button class="unselect__btn btn" title="Unselect current bike road"><i class="fa-solid fa-xmark"></i><span class="btn__text">Unselect</span></button>
-                </form>
+                </div>
             </section>
 
             <div class="resizer__mid" id="dragMe">
@@ -201,11 +206,13 @@
                     <h1 class="about">
                         Brno <span class="about__year">(<span class="about__year--min">2012</span> - <span class="about__year--max">2012</span>)</span>
                     </h1>
-                    <a class="filters__btn"><i class="fa-solid fa-filter"></i><span
-                            class="filters__btn-text">Filters</span></a>
+                    <button class="filters__btn">
+                        <i class="fa-solid fa-filter"></i>
+                        <span class="filters__btn-text">Filters</span>
+                    </button>
                 </div>
 
-                <form class="filters filters--hidden">
+                <div class="filters filters--hidden">
                     <ul class="filters__ul">
                         <li class="filters__li">
                             <label for="filter__line">Linechart</label>
@@ -220,7 +227,7 @@
                             <input type="checkbox" name="sex" id="filter__sex" checked />
                         </li>
                     </ul>
-                </form>
+                </div>
 
                 <p id="about_road" class="text__about"></p>
 
@@ -259,6 +266,7 @@
 
     <script src="scripts/graphs/barplot.js"></script>
     <script src="scripts/graphs/donut.js"></script>
+    <script src="scripts/graphs/lineplot.js"></script>
 
     <script src="scripts/utils/geocluster.js"></script>
     <script src="scripts/utils/filters.js"></script>
