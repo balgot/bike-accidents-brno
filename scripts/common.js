@@ -120,37 +120,3 @@ const precomputeRoadAccidents = (
     });
 };
 
-/**
- * Switch the dark mode.
- *
- * The detection of dark mode is based on the icon in the header.
- * This needs proper initialisation at the start of the script.
- *
- * @param {Boolean} forceOn if set, forces the state
- * @note initialize the icon at the start
- * @link https://webdesign.tutsplus.com/tutorials/color-schemes-with-css-variables-and-javascript--cms-36989.
- */
-const switchDarkMode = (forceOn = null) => {
-    const STYLE_TO_DARK = "fa-solid fa-moon";
-    const STYLE_TO_LIGHT = "fa-solid fa-sun";
-    const switcher = document.getElementById("dark_mode__img");
-    const turnDMOn =
-        forceOn != null ? forceOn : switcher.className.includes(STYLE_TO_DARK);
-
-    // change favicon
-    document
-        .querySelectorAll("link[rel*='icon']")
-        .forEach(
-            (e) =>
-                (e.href = turnDMOn
-                    ? "assets/pics/favicon--dark_mode.ico"
-                    : "assets/pics/favicon.ico")
-        );
-
-    // modify the button
-    switcher.className = turnDMOn ? STYLE_TO_LIGHT : STYLE_TO_DARK;
-
-    // change the color scheme
-    document.documentElement.classList.remove(turnDMOn ? "light" : "dark");
-    document.documentElement.classList.add(turnDMOn ? "dark" : "light");
-};

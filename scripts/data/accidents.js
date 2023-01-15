@@ -57,6 +57,7 @@ const initBikeAccident = (data) => {
         const {x, y} = accident[ACC_GEO];
         const location = [y, x];
         return L.marker(location)
+                .bindTooltip(accidentDescription(data[idx]))
                 .on("click", (e) => accidentClick(e, data, idx));
     });
 }
@@ -96,11 +97,7 @@ const accidentDescription = (accident) => {
  */
 const accidentClick = (event, data, idx) => {
     const target = event.target;  // the marker
-    console.log(data);
-    console.log(data[idx]);
-    console.log(accidentDescription(data[idx]));
-    // target.bindTooltip(accidentDescription(data[idx])).openTooltip();  // TODO: bind somewhere else
-    // console.log(`Accident click:`, target, idx);
+    target.openTooltip();
 };
 
 /**

@@ -17,13 +17,13 @@ const COLOR_ROAD_UNSELECTED = "red";
  *                      V A R I A B L E S
  ******************************************************************************/
 
-var DBG = true;
+var DBG = false;
 var map; // the map used for visualization
 
 // bike roads data
 var roads; // just as downloaded
 var selectedRoadIdx = null; // selected road or null
-var filteredRoads;  // same as `filteredAccidents`
+var filteredRoads; // same as `filteredAccidents`
 var roadsPolylines;
 
 // accidents data
@@ -33,6 +33,8 @@ var accidentsMarkers; // markers for each accident, have same length
 
 // array, one entry for each row contains a list of indexes to accidents
 var bikeRoadsAccidents;
+
+// var minYear = 0, maxYear = 3000;
 
 /******************************************************************************
  *                        H E L P E R S
@@ -50,13 +52,14 @@ const markRoads = (selectedIdx = null) => {
             i === selectedIdx ? COLOR_ROAD_SELECTED : COLOR_ROAD_UNSELECTED;
         poly.forEach((p) => p.setStyle({ color }));
     });
+    selectedRoadIdx = selectedIdx;
 };
 
 /* TODO */
 const renderSelection = () => {
     // display all the stuff
     drawAccidents(accidents, accidentsMarkers, map, () => true); // TODO: use selectedIdx's instead of function
-    displayRoads(map, roads, roadsPolylines, 0, 3000); // TODO: use selectedInx's instead of min, max year
+    displayRoads(map, roads, roadsPolylines, filteredRoads.map(arr => Object.values(arr).every(v => v == true)));
 };
 
 /**
@@ -120,15 +123,16 @@ const rangeUpdateCallback = (min, max) => {
 
     // then update the displayed data
     accidents.forEach((a, idx) => {
-        const condition = (min <= a[ACC_YEAR] && a[ACC_YEAR] <= max);
+        const year = a.attributes[ACC_YEAR];
+        const condition = min <= year && year <= max;
         filteredAccidents[idx].by_year = condition;
     });
 
     // then roads
     roads.forEach((r, idx) => {
-        const condition = (min <= r[ROAD_YEAR] && r[ROAD_YEAR] <= max);
+        const condition = min <= r[ROAD_YEAR] && r[ROAD_YEAR] <= max;
         filteredRoads[idx].by_year = condition;
-    })
+    });
 
     // finally render
     renderSelection();
@@ -157,13 +161,13 @@ const initialize = async (use_clusters = false) => {
     loadingWhat.innerHTML = "loading accidents";
     accidents = await loadBikeAccidents();
     accidentsMarkers = initBikeAccident(accidents);
-    filteredAccidents = accidents.map((a) => ({"is_loaded": true}));
+    filteredAccidents = accidents.map((a) => ({ is_loaded: true }));
 
     // load bike roads
     loadingWhat.innerHTML = "loading bike roads";
     roads = await loadRoads();
     roadsPolylines = initAllRoads(roads);
-    filteredRoads = roads.map((r) => ({"is_loaded": true}));
+    filteredRoads = roads.map((r) => ({ is_loaded: true }));
 
     // initialize the slider on the map (for years)
     const [minYear, maxYear] = minMaxYear(roads);
@@ -181,35 +185,21 @@ const initialize = async (use_clusters = false) => {
         roadsPolylines,
         accidents
     );
-};
 
-/******************************************************************************
- *                     M A I N   L O G I C
- ******************************************************************************/
-
-// first allow switching to dark mode at any time
-document
-    .getElementById("app__dark_mode")
-    .addEventListener("click", () => switchDarkMode());
-
-// init the dark mode
-if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    // by default we start with light
-    switchDarkMode(true);
-}
-
-// initialize everythin
-initialize().then(() => {
+    // POST
     loadingWhat.innerHTML = "done";
     console.log("Finisiehd all loading");
     document.documentElement.classList.remove("loading");
     document.documentElement.classList.add("ready");
-});
+    const donut = new DonutChart(500, 500, 100, "#sex");
+    const ddData = accidents.map((a) => ({
+        what: a.attributes[ACC_DESCRIPTION],
+    }));
+    console.log(ddData);
+    donut.update(ddData, "what");
+    // donut.update(donutData, donutAttr);
 
-// make the resizer available
-const resizer = new Resizer();
-
-// add to map handler for unselecting
+    // add to map handler for unselecting
 unselectForm.addEventListener("click", (e) => {
     e.preventDefault();
     markRoads();
@@ -226,44 +216,51 @@ map.on("zoomend", () => drawAccidents(accidents, accidentsMarkers, map));
 
 // sample visualisation - TODO: remove
 const margin = { top: 20, right: 20, bottom: 20, left: 50 };
-const donut = new DonutChart(500, 500, 100, "#sex");
-donut.update(donutData, donutAttr);
+
 const bp = new BarPlotSwitchable(460, 400, margin, "#age");
 bp.update(donutData, donutAttr);
 
 var randomI = true;
 const change = () => {
-    donut.update(randomI ? donutDataB : donutData, donutAttr);
+    // donut.update(randomI ? donutDataB : donutData, donutAttr);
     bp.update(randomI ? donutDataB : donutData, donutAttr);
     randomI = !randomI;
 };
 
 const line = new LinePlotAccidents(500, 500, margin, "#linechart");
 var data1 = [
-    {ser1: 0.3, ser2: 4},
-    {ser1: 2, ser2: 16},
-    {ser1: 3, ser2: 8}
- ];
+    { ser1: 0.3, ser2: 4, cum: 1 },
+    { ser1: 2, ser2: 16, cum: 3 },
+    { ser1: 3, ser2: 8, cum: 10 },
+];
 
- var data2 = [
-    {ser1: 1, ser2: 7},
-    {ser1: 4, ser2: 1},
-    {ser1: 6, ser2: 8}
- ];
- line.update(data1);
- var one = true;
- const ch = () => {
+var data2 = [
+    { ser1: 1, ser2: 7, cum: 5 },
+    { ser1: 4, ser2: 1, cum: 7 },
+    { ser1: 6, ser2: 8, cum: 7.5 },
+];
+line.update(data1);
+var one = true;
+const ch = () => {
     line.update(one ? data2 : data1);
     one = !one;
- }
+};
+};
 
-// pricina, stav_ridic -- barplot, simple, rotated
-// vek_skupina -- donut
-// den_v_tydnu, mesic -- https://d3-graph-gallery.com/graph/barplot_button_data_hard.html
+/******************************************************************************
+ *                     M A I N   L O G I C
+ ******************************************************************************/
 
-// TODO: when deselecting part in checkbox, remove filters in data and then put it back?? or unhighlight everything, or destroy and recompute?
-// TODO: initialize dark mode button...
-// TODO: loading something when the range/data is recomputed/rendedred..
-// TODO: wider bike roads to click on
-// TODO: remove DBG flag
-// TODO: sunburst, group by whether with or without bike road
+// first allow switching to dark mode at any time
+initDarkMode(
+    "app__dark_mode",
+    "dark_mode__img",
+    "assets/pics/favicon.ico",
+    "assets/pics/favicon--dark_mode.ico"
+);
+
+// initialize everythin
+initialize();
+
+// make the resizer available
+const resizer = new Resizer();

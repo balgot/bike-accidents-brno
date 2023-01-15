@@ -84,7 +84,7 @@ const minMaxYear = (data) => {
 };
 
 /**
- * Display only the roads in the given year span.
+ * Display only the roads by their index.
  *
  * @param {L.Map} map
  *      map to which the roads should be drawn
@@ -92,16 +92,14 @@ const minMaxYear = (data) => {
  *      bike road data
  * @param {[[L.Poyline]]} polys
  *      the corresponding polylines
- * @param {Number} from
- *      min year to include
- * @param {Number} to
- *      max year to include
+ * @param {Array[Boolean]} flag
+ *      whether to display any particular road
  *
  * @returns nothing
  */
-const displayRoads = (map, data, polys, from, to) => {
+const displayRoads = (map, data, polys, flag) => {
     data.forEach((elem, idx) => {
-        const keep = from <= elem[ROAD_YEAR] && elem[ROAD_YEAR] <= to;
+        const keep = flag[idx];
         polys[idx].forEach(p => keep ? p.addTo(map) : p.removeFrom(map));
     });
 };
@@ -115,7 +113,7 @@ const displayRoads = (map, data, polys, from, to) => {
  * @returns {String}
  *      the description
  *
- * @note the street is not filled in
+ * @note the street name is not filled in
  * @todo add more options, variations
  * @idea add pictures of how it might look like?
  */
@@ -137,8 +135,3 @@ const roadInfo = (road) => {
     ];
     return options[Math.floor(Math.random() * options.length)];
 }
-
-/**
- * color gradient for years?
- * TODO: cluster on zoom in
- */

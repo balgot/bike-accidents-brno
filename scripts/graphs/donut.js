@@ -28,7 +28,7 @@ class DonutChart {
             {}
         ); // what: how many
         return Object.keys(occurrences).map((key) => [
-            Number(key),
+            key,
             occurrences[key],
         ]);
     }
@@ -55,6 +55,7 @@ class DonutChart {
             .sort(null) // Do not sort group by size
             .value((d) => d[1]);
         const data_ready = pie(counts);
+        console.log({data_ready, counts, entries})
 
         // The arc generator
         const arc = d3
@@ -119,7 +120,7 @@ class DonutChart {
         this.svg.selectAll("allLabels")
             .data(data_ready)
             .join("text")
-            .text((d) => `${d.data[0]} (count: ${d.data[1]})`)
+            .text((d) => `${d.data[0]} (#${d.data[1]})`)
             .style("fill", "var(--color-font-primary)")
             .attr("transform", function (d) {
                 const pos = outerArc.centroid(d);
