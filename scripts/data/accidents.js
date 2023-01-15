@@ -115,25 +115,24 @@ var _computedClusters = null;
  *      the corresponding markers from `initBikeAccidents`
  * @param {[L.Map]} map
  *      map object to draw data into
- * @param {(Accident, Marker) => bool} doShowFn
- *      null or callable `(accident, marker) -> bool`
+ * @param {[bool]} show
+ *      for each accident determines whether to show it or not
  *
  * @returns nothing
  */
-const drawAccidents = (data, markers, map, doShowFn = null) => {
+const drawAccidents = (data, markers, map, show = null) => {
     // first clear everythin
     markers.map(m => m.removeFrom(map));
     _computedClusters?.map(c => c.removeFrom(map));
 
     if (map.getZoom() < 15) {
-        drawClusteredAccidents(data, map);  // TODO: tiny bit of cheating by not showing only the relevant data, but whatever
+        drawClusteredAccidents(data.filter((d, i) => show == null || show[i]), map);
         return;
     }
 
-    const show = (accident, marker) => (doShowFn == null || doShowFn(accident, marker));
     data.forEach((accident, idx) => {
         const marker = markers[idx];
-        if (show(accident, marker))
+        if (show == null || show[idx])
             marker.addTo(map);
         else
             marker.removeFrom(map);

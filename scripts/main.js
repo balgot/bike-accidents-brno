@@ -58,7 +58,7 @@ const markRoads = (selectedIdx = null) => {
 /* TODO */
 const renderSelection = () => {
     // display all the stuff
-    drawAccidents(accidents, accidentsMarkers, map, () => true); // TODO: use selectedIdx's instead of function
+    drawAccidents(accidents, accidentsMarkers, map, filteredAccidents.map(arr => Object.values(arr).every(v => v == true)));
     displayRoads(map, roads, roadsPolylines, filteredRoads.map(arr => Object.values(arr).every(v => v == true)));
 };
 
@@ -130,7 +130,9 @@ const rangeUpdateCallback = (min, max) => {
 
     // then roads
     roads.forEach((r, idx) => {
-        const condition = min <= r[ROAD_YEAR] && r[ROAD_YEAR] <= max;
+        // there are two options how to display a road here, either it was built
+        // way before the range, or during
+        const condition = r[ROAD_YEAR] <= max;
         filteredRoads[idx].by_year = condition;
     });
 
@@ -209,7 +211,7 @@ unselectForm.addEventListener("click", (e) => {
 });
 
 // add a zoom event to the map, TODO: moveend event
-map.on("zoomend", () => drawAccidents(accidents, accidentsMarkers, map));
+map.on("zoomend", () => renderSelection());
 // map.on("moveend", function () {
 //     console.log(map.getCenter().toString());
 //   });
