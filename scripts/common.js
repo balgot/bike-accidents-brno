@@ -12,7 +12,7 @@ const MAP_ZOOM = 13;
  */
 const initMap = () => {
     const map = L.map("map", {
-        preferCanvas: true  // for speed with many records, the DOM is slow
+        preferCanvas: true,  // for speed with many records, the DOM is slow
     }).setView(BrnoPosition, MAP_ZOOM);
 
     // add a layer with data

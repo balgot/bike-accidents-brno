@@ -47,10 +47,11 @@ const loadRoads = async () => {
  */
 const initAllRoads = (data) => {
     const color = "red"; // TODO: temporary, do something with this
+    const renderer = L.canvas({ padding: 0.5, tolerance: 10 });
     return data.map((elem, idx) => {
         return elem[ROAD_GEO].paths.map((path) => {
             const coords = path.map((e) => [e[1], e[0]]);
-            return L.polyline(coords, {color})
+            return L.polyline(coords, {color, renderer })
                     .on("click", (e) => roadClick(e, data, idx));
         });
     });

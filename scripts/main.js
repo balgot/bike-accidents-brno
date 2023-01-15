@@ -55,11 +55,30 @@ const markRoads = (selectedIdx = null) => {
     selectedRoadIdx = selectedIdx;
 };
 
-/* TODO */
+/**
+ * Display the selected data on the map.
+ *
+ * Filters out bike roads and bike accidents as necessary, does also
+ * the highlighting.
+ *
+ * @note expensive, call rarely
+ */
 const renderSelection = () => {
     // display all the stuff
-    drawAccidents(accidents, accidentsMarkers, map, filteredAccidents.map(arr => Object.values(arr).every(v => v == true)));
-    displayRoads(map, roads, roadsPolylines, filteredRoads.map(arr => Object.values(arr).every(v => v == true)));
+    drawAccidents(
+        accidents,
+        accidentsMarkers,
+        map,
+        filteredAccidents.map((arr) =>
+            Object.values(arr).every((v) => v == true)
+        )
+    );
+    displayRoads(
+        map,
+        roads,
+        roadsPolylines,
+        filteredRoads.map((arr) => Object.values(arr).every((v) => v == true))
+    );
 };
 
 /**
@@ -140,6 +159,26 @@ const rangeUpdateCallback = (min, max) => {
     renderSelection();
 };
 
+/* TODO */
+const updateDescription = () => {
+    // first decide on the generic Brno description or describe the selected
+    // road...
+    const BrnoDescription = `
+        During the selected time period, there were
+        as many as <em>${roadsBuild} new bike roads built</em>
+        (totalling to <em>${roadsTotal}</em> bike roads in total).
+
+        At the same time, <em>${accCount}</em> accidents were registred.
+        View the more specific statistics below.
+    `;
+
+    // then update each chart, namely:
+
+    // 1) cummulative of accidents and bike roads length
+    // 2) some text within, like about sex and stuff
+    // 3) ...
+}
+
 /**
  * Initialize the scene.
  *
@@ -152,6 +191,7 @@ const rangeUpdateCallback = (min, max) => {
  * @todo loading bar? https://loading.io/progress/
  */
 const initialize = async (use_clusters = false) => {
+
     // first, mark the root as loading (to display a nice animation :P )
     document.documentElement.classList.add("loading");
 
@@ -172,15 +212,17 @@ const initialize = async (use_clusters = false) => {
     filteredRoads = roads.map((r) => ({ is_loaded: true }));
 
     // initialize the slider on the map (for years)
+    loadingWhat.innerHTML = "precomputing stuff";
     const [minYear, maxYear] = minMaxYear(roads);
     initializeSlider(minYear, maxYear, rangeUpdateCallback);
 
     // finally render everything
+    loadingWhat.innerHTML = "initial render";
     renderSelection();
 
-    // precompute which accident belongs to which road - make sure to call after
-    // the initial drawing
-    loadingWhat.innerHTML = "precomputing stuff";
+    // precompute which accident belongs to which road
+    // make sure to call after the initial drawing!!
+    loadingWhat.innerHTML = "precomputing more stuff";
     bikeRoadsAccidents = precomputeRoadAccidents(
         map,
         roads,
@@ -188,11 +230,25 @@ const initialize = async (use_clusters = false) => {
         accidents
     );
 
-    // POST
+    // add to map handler for unselecting
+    unselectForm.addEventListener("click", (e) => {
+        e.preventDefault();
+        markRoads();
+        resetMap(map);
+        unselectForm.classList.add(unselectHidden);
+        aboutRoad.innerHTML = "";
+    });
+
+    // when the map gets resized, redraw accidents (potentially use clusters)
+    map.on("zoomend", () => renderSelection());
+
+    // we are done with loading
     loadingWhat.innerHTML = "done";
-    console.log("Finisiehd all loading");
+    console.log("Finished all loading");
     document.documentElement.classList.remove("loading");
     document.documentElement.classList.add("ready");
+
+    // DEMO stuff
     const donut = new DonutChart(500, 500, 100, "#sex");
     const ddData = accidents.map((a) => ({
         what: a.attributes[ACC_DESCRIPTION],
@@ -201,52 +257,37 @@ const initialize = async (use_clusters = false) => {
     donut.update(ddData, "what");
     // donut.update(donutData, donutAttr);
 
-    // add to map handler for unselecting
-unselectForm.addEventListener("click", (e) => {
-    e.preventDefault();
-    markRoads();
-    resetMap(map);
-    unselectForm.classList.add(unselectHidden);
-    aboutRoad.innerHTML = "";
-});
+    // sample visualisation - TODO: remove
+    const margin = { top: 20, right: 20, bottom: 20, left: 50 };
 
-// add a zoom event to the map, TODO: moveend event
-map.on("zoomend", () => renderSelection());
-// map.on("moveend", function () {
-//     console.log(map.getCenter().toString());
-//   });
+    const bp = new BarPlotSwitchable(460, 400, margin, "#age");
+    bp.update(donutData, donutAttr);
 
-// sample visualisation - TODO: remove
-const margin = { top: 20, right: 20, bottom: 20, left: 50 };
+    var randomI = true;
+    const change = () => {
+        // donut.update(randomI ? donutDataB : donutData, donutAttr);
+        bp.update(randomI ? donutDataB : donutData, donutAttr);
+        randomI = !randomI;
+    };
 
-const bp = new BarPlotSwitchable(460, 400, margin, "#age");
-bp.update(donutData, donutAttr);
+    const line = new LinePlotAccidents(500, 500, margin, "#linechart");
+    var data1 = [
+        { ser1: 0.3, ser2: 4, cum: 1 },
+        { ser1: 2, ser2: 16, cum: 3 },
+        { ser1: 3, ser2: 8, cum: 10 },
+    ];
 
-var randomI = true;
-const change = () => {
-    // donut.update(randomI ? donutDataB : donutData, donutAttr);
-    bp.update(randomI ? donutDataB : donutData, donutAttr);
-    randomI = !randomI;
-};
-
-const line = new LinePlotAccidents(500, 500, margin, "#linechart");
-var data1 = [
-    { ser1: 0.3, ser2: 4, cum: 1 },
-    { ser1: 2, ser2: 16, cum: 3 },
-    { ser1: 3, ser2: 8, cum: 10 },
-];
-
-var data2 = [
-    { ser1: 1, ser2: 7, cum: 5 },
-    { ser1: 4, ser2: 1, cum: 7 },
-    { ser1: 6, ser2: 8, cum: 7.5 },
-];
-line.update(data1);
-var one = true;
-const ch = () => {
-    line.update(one ? data2 : data1);
-    one = !one;
-};
+    var data2 = [
+        { ser1: 1, ser2: 7, cum: 5 },
+        { ser1: 4, ser2: 1, cum: 7 },
+        { ser1: 6, ser2: 8, cum: 7.5 },
+    ];
+    line.update(data1);
+    var one = true;
+    const ch = () => {
+        line.update(one ? data2 : data1);
+        one = !one;
+    };
 };
 
 /******************************************************************************
