@@ -44,9 +44,11 @@ const loadRoads = async () => {
  *      2d list of polylines, each record hold a list of polylines
  *      for the corresponding BikeRoad, the click event emmited
  *      i.e. `roadClick` accepts the index to `data`
+ *
+ * @note for now just in red, it is visible, might be changed later
  */
 const initAllRoads = (data) => {
-    const color = "red"; // TODO: temporary, do something with this
+    const color = "red";
     const renderer = L.canvas({ padding: 0.5, tolerance: 10 });
     return data.map((elem, idx) => {
         return elem[ROAD_GEO].paths.map((path) => {
@@ -68,20 +70,10 @@ const initAllRoads = (data) => {
  */
 const minMaxYear = (data) => {
     const thisYear = new Date().getFullYear();
-    // console.log("Min Year IS");
-    // console.log(data.reduce((p, e) => Math.min(p, e[ROAD_YEAR])));
-    // data.forEach((d) => console.log(d[ROAD_YEAR]));
     return data.reduce(([min, max], road) => [
         Math.min(min, road[ROAD_YEAR]),
         Math.max(max, road[ROAD_YEAR]),
     ], [thisYear, 0]);
-    // let min = Infinity;
-    // let max = new Date().getFullYear();  // current year
-    // data.forEach((elem) => {
-    //     min = Math.min(min, elem[ROAD_YEAR]);
-    //     max = Math.max(max, elem[ROAD_YEAR]);
-    // });
-    // return [min, max];
 };
 
 /**
@@ -125,12 +117,12 @@ const roadInfo = (road) => {
     const options = [
         `
         <p class="bike_road">
-            Bike Road <span class="bike_road__name"></span>
-            was finished in <span class="bike_road__year">${year}</span>.
+            Bike Road <em class="bike_road__name"></em>
+            was finished in  year <em class="bike_road__year">${year}</em>.
             The length of the segment is
-            <span class="bike_road__length">${len}</span> metres.
+            <em class="bike_road__length">${len}</em> metres.
             The project was:
-            <span class="bike_road__project">${translate(_type)}</span>.
+            <em class="bike_road__project">${translate(_type)}</em>.
         </p>
         `
     ];

@@ -98,7 +98,7 @@ const roadClick = (event, data, idx) => {
 
     // update the global vars related to the current selection
     selectedRoadIdx = idx;
-    filteredAccidents = bikeRoadsAccidents[idx];
+    // filteredAccidents = bikeRoadsAccidents[idx]; // TODO: this is wrong
 
     // zoom in to the segments (on the whole road)
     let bounds = L.latLngBounds();
@@ -110,18 +110,11 @@ const roadClick = (event, data, idx) => {
     // show the unselect button
     unselectForm.classList.remove(unselectHidden);
 
-    // update the road description
-    const description = roadInfo(data[idx]);
-    aboutRoad.innerHTML = description;
-    // ..and retrieve the real address
-    const [long, latt] = data[idx][ROAD_GEO].paths[0][0];
-    getAddress(latt, long).then(({ street, suburb, city }) => {
-        const streetName = aboutRoad.querySelector(".bike_road__name");
-        streetName.innerHTML = street;
-    });
-
     // highlight selected road
     markRoads(idx);
+
+    // update text part
+    updateText();
 
     // and update all the graphs
     renderSelection();
@@ -157,20 +150,51 @@ const rangeUpdateCallback = (min, max) => {
 
     // finally render
     renderSelection();
+    updateText();
 };
 
-/* TODO */
+/** ... */
+const describeBrno = () => {
+    const _r = filteredRoads.map(r => Object.values(r).every(v => v == true)).filter(v => v == true);
+    const roadsTotal = _r.length;
+    const minYear = +minYearSpan.innerHTML;
+    console.log({ minYear });
+    const roadsBuild = _r.filter((v, idx) => roads[idx][ROAD_YEAR] >= minYear).length;
+    const accCount = filteredAccidents.map(r => Object.values(r).every(v => v == true)).filter(a => a == true).length;
+
+    return `
+        <p class="road_info">
+            During the selected time period, there were
+            as many as <em>${roadsBuild} new bike roads built</em>
+            (totalling to <em>${roadsTotal}</em> bike roads in total).
+
+            At the same time, <em>${accCount}</em> accidents were registred.
+            View the more specific statistics below.
+        </p>
+    `;
+}
+
 const updateDescription = () => {
+    if (selectedRoadIdx == null)
+        aboutRoad.innerHTML = describeBrno();
+    else {
+        const description = roadInfo(roads[selectedRoadIdx]);
+        aboutRoad.innerHTML = description;
+        // ..and retrieve the real address
+        const [long, latt] = roads[selectedRoadIdx][ROAD_GEO].paths[0][0];
+        getAddress(latt, long).then(({ street, suburb, city }) => {
+            const streetName = aboutRoad.querySelector(".bike_road__name");
+            if (streetName)
+                streetName.innerHTML = street;
+        });
+    }
+}
+
+/* TODO */
+const updateText = () => {
     // first decide on the generic Brno description or describe the selected
     // road...
-    const BrnoDescription = `
-        During the selected time period, there were
-        as many as <em>${roadsBuild} new bike roads built</em>
-        (totalling to <em>${roadsTotal}</em> bike roads in total).
-
-        At the same time, <em>${accCount}</em> accidents were registred.
-        View the more specific statistics below.
-    `;
+    updateDescription();
 
     // then update each chart, namely:
 
@@ -219,6 +243,7 @@ const initialize = async (use_clusters = false) => {
     // finally render everything
     loadingWhat.innerHTML = "initial render";
     renderSelection();
+    updateText();
 
     // precompute which accident belongs to which road
     // make sure to call after the initial drawing!!
@@ -236,7 +261,7 @@ const initialize = async (use_clusters = false) => {
         markRoads();
         resetMap(map);
         unselectForm.classList.add(unselectHidden);
-        aboutRoad.innerHTML = "";
+        updateDescription();
     });
 
     // when the map gets resized, redraw accidents (potentially use clusters)
