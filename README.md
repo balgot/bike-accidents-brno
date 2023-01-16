@@ -25,7 +25,7 @@ The presented data are accessible at [Brno public data](https://data.brno.cz/):
 
 ## Other sources
 
-Amazing vizualisation also at [https://storymaps.arcgis.com/stories/ac4013968cc64728b5663b375f7a372c](https://storymaps.arcgis.com/stories/ac4013968cc64728b5663b375f7a372c).
+Amazing vizualisation of bike roads in Brno also [here](https://storymaps.arcgis.com/stories/ac4013968cc64728b5663b375f7a372c).
 
 CSS animations:
 * [loading text](https://codepen.io/thetallweeks/pen/yybGra)
@@ -33,3 +33,6 @@ CSS animations:
 
 JavaScript functionality inspirations:
 * [range slider](https://w3collective.com/double-range-slider-html-css-js/)
+* [all graphs](https://d3-graph-gallery.com)
+* [clustering](https://github.com/yetzt/node-geocluster)
+* [resizable map](https://htmldom.dev/create-resizable-split-views/)
