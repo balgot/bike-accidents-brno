@@ -118,7 +118,8 @@
     .app__header {
         position: sticky !important;
         top: 0 !important;
-        z-index: 999999999 !important; /* due to leaflet thigs.. */
+        z-index: 999999999 !important;
+        /* due to leaflet thigs.. */
     }
 
     .app__main {
@@ -161,7 +162,9 @@ a {
     color: var(--link-default-color);
 }
 
-a:hover, a:focus, a:visited {
+a:hover,
+a:focus,
+a:visited {
     color: var(--link-visited-color);
 }
 
@@ -179,29 +182,35 @@ a:hover, a:focus, a:visited {
  *                             M O D A L
  ******************************************************************************/
 
- .modal {
+.modal {
     display: none;
     position: fixed;
-    z-index: 999999; /* Sit on top, temporary fix for leaflet z-index, TODO: fix */
+    z-index: 999999;
+    /* Sit on top, temporary fix for leaflet z-index, TODO: fix */
     left: 0;
     top: 0;
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
     height: 100vh;
     width: 100vw;
-  }
+}
 
-  .modal__content {
-    margin: 15% auto; /* 15% from the top and centered */
+.modal__content {
+    margin: 15% auto;
+    /* 15% from the top and centered */
     background-color: var(--color-primary);
     padding: 20px;
     border: 1px solid var(--color-font-primary);
-    width: min(80%, 50em); /* Could be more or less, depending on screen size */
-  }
+    width: min(80%, 50em);
+    /* Could be more or less, depending on screen size */
+}
 
-  /* The Close Button */
-  .modal__close {
+/* The Close Button */
+.modal__close {
     color: var(--color-font-primary);
     float: right;
     font-size: 1.5em;
@@ -209,37 +218,37 @@ a:hover, a:focus, a:visited {
     transition: all linear .2s;
     text-decoration: none;
     cursor: pointer;
-  }
+}
 
-  .modal__heading {
+.modal__heading {
     display: inline-block;
     color: var(--color-font-secondary);
     border-bottom: 1px solid var(--color-font-primary);
-  }
+}
 
-  .modal__text {
-      margin: 0.5em 0;
-      padding: .5em .1em;
-  }
+.modal__text {
+    margin: 0.5em 0;
+    padding: .5em .1em;
+}
 
-  .modal__close:hover,
-  .modal__close:focus {
+.modal__close:hover,
+.modal__close:focus {
     color: var(--color-font-secondary);
-  }
+}
 
 
 /*******************************************************************************
  *                          I N S T R U C T I O N S
  ******************************************************************************/
 
- .instructions {
+.instructions {
     display: inline-block;
     border: 2px solid var(--color-alert);
     color: var(--color-font-primary);
     padding: 0;
- }
+}
 
- .instructions__note {
+.instructions__note {
     text-transform: uppercase;
     font-weight: bolder;
     display: block;
@@ -249,11 +258,11 @@ a:hover, a:focus, a:visited {
     font-size: larger;
     padding: .1em .5em;
     font-style: normal;
- }
+}
 
- .instructions__text {
-     padding: 1em;
- }
+.instructions__text {
+    padding: 1em;
+}
 
 /*******************************************************************************
  *                            H E A D E R
@@ -320,12 +329,15 @@ a:hover, a:focus, a:visited {
  ******************************************************************************/
 
 /* todo: somthing about !important */
-:root .app__main, :root.loading .app__main {
+:root .app__main,
+:root.loading .app__main {
     visibility: hidden !important;
-    height: 0;  /* do not tamper with scrolling on preloader */
+    height: 0;
+    /* do not tamper with scrolling on preloader */
 }
 
-:root .preloader, :root.loading .preloader {
+:root .preloader,
+:root.loading .preloader {
     display: flex !important;
 }
 
@@ -338,35 +350,36 @@ a:hover, a:focus, a:visited {
     display: none !important;
 }
 
- .app__main {
-     display: flex;
-     flex-direction: row;
-     flex: 1;  /* take the rest of the width */
-     /* padding-top: 0.3em; */
- }
+.app__main {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    /* take the rest of the width */
+    /* padding-top: 0.3em; */
+}
 
- .resizer {
-     display: flex;
- }
+.resizer {
+    display: flex;
+}
 
- .resizer__left {
-     width: 50%;
- }
+.resizer__left {
+    width: 50%;
+}
 
- .resizer__visual {
-     width: 1px;
-     height: 100%;
-     background-color: var(--color-font-primary);
- }
+.resizer__visual {
+    width: 1px;
+    height: 100%;
+    background-color: var(--color-font-primary);
+}
 
- .resizer__mid {
-     padding: .3em 1em;
-     cursor: col-resize;
- }
+.resizer__mid {
+    padding: .3em 1em;
+    cursor: col-resize;
+}
 
- .resizer__right {
+.resizer__right {
     flex: 1 1 0%;
- }
+}
 
 /*******************************************************************************
  *                           B I G   M A P
@@ -397,9 +410,9 @@ a:hover, a:focus, a:visited {
     top: 0;
     right: 0;
     margin: 10px;
-    -webkit-box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75);
-    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.75);
     z-index: 7777777;
 }
 
@@ -421,9 +434,10 @@ a:hover, a:focus, a:visited {
     background: #f4f4f4;
 }
 
-.unselect__btn > i {
+.unselect__btn>i {
     color: var(--red);
-    width: 30px;  /* todo */
+    width: 30px;
+    /* todo */
     height: 30px;
     display: flex;
     align-items: center;
@@ -443,7 +457,7 @@ a:hover, a:focus, a:visited {
     overflow: hidden; */
 }
 
-.btn:hover > .btn__text {
+.btn:hover>.btn__text {
     padding: 0 .5em;
     width: min-content;
 }
@@ -483,9 +497,7 @@ a:hover, a:focus, a:visited {
 }
 
 .text__about {
-    /* mock */
-    min-height: 20vh;
-    padding: 0 2em;
+    padding: 0 2em 3em 2em;
 }
 
 
@@ -509,7 +521,7 @@ a:hover, a:focus, a:visited {
     border: none;
 }
 
-.filters__btn > i {
+.filters__btn>i {
     width: 1em;
 }
 
@@ -573,12 +585,30 @@ a:hover, a:focus, a:visited {
 /*******************************************************************************
  *                            C H A R T S
  ******************************************************************************/
-.text__entry { height: 20vh; }
+.text__entry {
+    height: 20vh;
+}
 
-.chart {}
+.graph {
+    margin: 1em 0;
+}
 
 .highlight--donut {
     filter: brightness(150%);
 }
 
-/* TODO: mobile: idk about data not showing up... */
+/* g {
+            width: 100%;
+            height: 100%;
+        }
+
+        path.slice {
+            stroke-width: 2px;
+        }
+
+        polyline {
+            opacity: 0.3;
+            stroke: black;
+            stroke-width: 2px;
+            fill: none;
+        } */

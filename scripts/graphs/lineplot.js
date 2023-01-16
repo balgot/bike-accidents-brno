@@ -4,7 +4,7 @@ class LinePlotAccidents {
         this.width = width - margin.left - margin.right;
         this.height = height - margin.top - margin.bottom;
 
-        // responsive
+        // responsive svg container
         const outer = d3
             .select(where)
             .append("svg")
@@ -22,7 +22,7 @@ class LinePlotAccidents {
 
         // axis
         this.x = d3.scaleLinear().range([0, this.width]);
-        this.xAxis = d3.axisBottom().scale(this.x);
+        this.xAxis = d3.axisBottom().scale(this.x).tickFormat(d3.format("d"));
         this.svg
             .append("g")
             .attr("transform", "translate(0," + this.height + ")")
@@ -33,15 +33,15 @@ class LinePlotAccidents {
         this.yAxis = d3.axisLeft().scale(this.y);
         this.svg.append("g").attr("class", "line__axis--y");
 
-        // y2 axis
+        // y2 axis, for cummulative
         this.y2 = d3.scaleLinear().range([this.height, 0]);
-        // this.yAxis = d3.axisLeft().scale(this.y);
-        // this.svg.append("g").attr("class", "line__axis--y");
+        this.y2Axis = d3.axisLeft().scale(this.y2);
+        this.svg.append("g").attr("class", "line__axis--y2").attr("transform", `translate(${this.width}, 0)`);
     }
 
-    update(data) {
+    update(data, x = "ser1", y = "ser2", z = "cum") {
         // Create the X axis:
-        this.x.domain([0, d3.max(data, (d) => d.ser1)]);
+        this.x.domain([d3.min(data, (d) => d[x]), d3.max(data, (d) => d[x])]);
         this.svg
             .selectAll(".line__axis--x")
             .transition()
@@ -49,7 +49,7 @@ class LinePlotAccidents {
             .call(this.xAxis);
 
         // create the Y axis
-        this.y.domain([0, d3.max(data, (d) => d.ser2)]);
+        this.y.domain([0, d3.max(data, (d) => d[y] || 0)]);
         this.svg
             .selectAll(".line__axis--y")
             .transition()
@@ -57,12 +57,19 @@ class LinePlotAccidents {
             .call(this.yAxis);
 
         // update y2 axis
-        this.y2.domain([0, d3.max(data, d => d.cum)]);
+        this.y2.domain([0, 1.5 * d3.max(data, (d) => d[z])]);
+        this.svg
+            .selectAll(".line__axis--y2")
+            .transition()
+            .duration(1000)
+            .call(this.y2Axis);
 
-        // Create a update selection: bind to the new data
+        // accidents - line plot
+        const nonZeroIdx = data.findIndex(e => e["accidents"] > 0);
+        console.log({nonZeroIdx, data})
         const u = this.svg
             .selectAll(".line__point")
-            .data([data], (d) => d.ser1);
+            .data([data.filter((_, i) => i >= nonZeroIdx)], (d) => d[x]);
 
         // Updata the line
         u.enter()
@@ -75,58 +82,39 @@ class LinePlotAccidents {
                 "d",
                 d3
                     .line()
-                    .x((d) => this.x(d.ser1))
-                    .y((d) => this.y(d.ser2))
+                    .x((d) => this.x(d[x]))
+                    .y((d) => this.y(d[y] || 0))
             )
             .attr("fill", "none")
             .attr("stroke", "steelblue")
             .attr("stroke-width", 2.5);
 
+        // accidents - circles
+        this.svg.selectAll(".line__point--circle").remove();
+        const circles = this.svg
+            .selectAll(".line__point--circle")
+            .data(data.filter((_, i) => i >= nonZeroIdx), (d) => d[x]);
+
+        circles.enter()
+              .append("circle")
+              .attr("class", "line__point--circle")
+              .merge(circles)
+              .transition()
+              .duration(1000)
+              .attr("fill", "steelblue")
+              .attr("stroke", "none")
+              .attr("cx", d => this.x(d[x]))
+              .attr("cy", d => this.y(d[y]))
+              .attr("r", 5);
+        this.svg.selectAll(".line__point--circle").append("title").text(d => `Accidents: ${d[y]}`)
+
         // new: cummulative...
         // Create a update selection: bind to the new data
-        const v = this.svg
-            .selectAll(".line__cumm")
-            .data([data], (d) => d.ser1);
-
-        // make tooltip
-        this.tooltip = this.svg
-    .append("div")
-    .style("opacity", 0)
-    .attr("class", "tooltip")
-    .style("background-color", "white")
-    .style("border", "solid")
-    .style("border-width", "1px")
-    .style("border-radius", "5px")
-    .style("padding", "10px");
-
-    this.mouseover = function(event, d) {
-        this.tooltip
-          .style("opacity", 1)
-      }
-
-      this.mousemove = function(event, d) {
-          console.log("mosemove", this.tooltip);
-        this.tooltip
-          .html(`The exact value of<br>the Ground Living area is: ${d.GrLivArea}`)
-          .style("left", /*(event.x)/2 + */"0px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
-          .style("top", /*(event.y)/2 +*/ "0px")
-      }
-
-      // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
-      this.mouseleave = function(event,d) {
-        this.tooltip
-          .transition()
-          .duration(200)
-          .style("opacity", 0)
-      }
-
+        const v = this.svg.selectAll(".line__cumm").data([data], (d) => d[x]);
 
         // Updata the line
-        const path =
-        v.enter()
-            .append("path");
-            path
-            .attr("class", "line__cumm")
+        const path = v.enter().append("path");
+        path.attr("class", "line__cumm")
             .merge(v)
             .transition()
             .duration(1000)
@@ -134,17 +122,15 @@ class LinePlotAccidents {
                 "d",
                 d3
                     .area()
-                    .x((d) => this.x(d.ser1))
+                    .x((d) => this.x(d[x]))
                     .y0(this.y2(0))
-                    .y1((d) => this.y2(d.cum))
+                    .y1((d) => this.y2(d[z]))
             )
             .attr("fill", "#cce5df")
             .attr("fill-opacity", "0.4")
             .attr("stroke", "#69b3a2")
             .attr("stroke-width", 1.5);
-            path.on("mouseover", this.mouseover.bind(this) )
-    .on("mousemove", this.mousemove.bind(this) )
-    .on("mouseleave", this.mouseleave.bind(this) );
+        path.append("title").text("Cummulative length of roads")
     }
 }
 

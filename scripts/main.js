@@ -34,7 +34,10 @@ var accidentsMarkers; // markers for each accident, have same length
 // array, one entry for each row contains a list of indexes to accidents
 var bikeRoadsAccidents;
 
-// var minYear = 0, maxYear = 3000;
+// graphs
+var lineAccidentsCum;
+var minYear = 0,
+    maxYear = 3000;
 
 /******************************************************************************
  *                        H E L P E R S
@@ -132,6 +135,8 @@ const rangeUpdateCallback = (min, max) => {
     // first update the information on the info-panel
     minYearSpan.innerHTML = min;
     maxYearSpan.innerHTML = max;
+    minYear = min;
+    maxYear = max;
 
     // then update the displayed data
     accidents.forEach((a, idx) => {
@@ -155,12 +160,18 @@ const rangeUpdateCallback = (min, max) => {
 
 /** ... */
 const describeBrno = () => {
-    const _r = filteredRoads.map(r => Object.values(r).every(v => v == true)).filter(v => v == true);
+    const _r = filteredRoads
+        .map((r) => Object.values(r).every((v) => v == true))
+        .filter((v) => v == true);
     const roadsTotal = _r.length;
     const minYear = +minYearSpan.innerHTML;
     console.log({ minYear });
-    const roadsBuild = _r.filter((v, idx) => roads[idx][ROAD_YEAR] >= minYear).length;
-    const accCount = filteredAccidents.map(r => Object.values(r).every(v => v == true)).filter(a => a == true).length;
+    const roadsBuild = _r.filter(
+        (v, idx) => roads[idx][ROAD_YEAR] >= minYear
+    ).length;
+    const accCount = filteredAccidents
+        .map((r) => Object.values(r).every((v) => v == true))
+        .filter((a) => a == true).length;
 
     return `
         <p class="road_info">
@@ -172,11 +183,10 @@ const describeBrno = () => {
             View the more specific statistics below.
         </p>
     `;
-}
+};
 
 const updateDescription = () => {
-    if (selectedRoadIdx == null)
-        aboutRoad.innerHTML = describeBrno();
+    if (selectedRoadIdx == null) aboutRoad.innerHTML = describeBrno();
     else {
         const description = roadInfo(roads[selectedRoadIdx]);
         aboutRoad.innerHTML = description;
@@ -184,11 +194,22 @@ const updateDescription = () => {
         const [long, latt] = roads[selectedRoadIdx][ROAD_GEO].paths[0][0];
         getAddress(latt, long).then(({ street, suburb, city }) => {
             const streetName = aboutRoad.querySelector(".bike_road__name");
-            if (streetName)
-                streetName.innerHTML = street;
+            if (streetName) streetName.innerHTML = street;
         });
     }
-}
+};
+
+/* TODO: remove from here */
+findCounts = (values) => {
+    const occurrences = values.reduce(
+        (acc, curr) => (acc[curr] ? ++acc[curr] : (acc[curr] = 1), acc),
+        {}
+    ); // what: how many
+    return Object.keys(occurrences).map((key) => [
+        Number(key),
+        occurrences[key],
+    ]);
+};
 
 /* TODO */
 const updateText = () => {
@@ -199,9 +220,68 @@ const updateText = () => {
     // then update each chart, namely:
 
     // 1) cummulative of accidents and bike roads length
+    // 1.a) prepare accidents on the selection
+    const acc = accidents.filter(
+        (_, idx) =>
+            Object.values(filteredAccidents[idx]).every((v) => v == true) &&
+            (selectedRoadIdx == null ||
+                bikeRoadsAccidents[selectedRoadIdx].includes(idx))
+    );
+    const years = acc.map((a) => a.attributes[ACC_YEAR]);
+    const yearData = findCounts(years).sort((a, b) => a[0] - b[0]);
+
+    // 1.b) prepare roads
+    const ro =
+        selectedRoadIdx == null
+            ? roads.filter((_, idx) =>
+                  Object.values(filteredRoads[idx]).every((v) => v == true)
+              )
+            : [roads[selectedRoadIdx]];
+    let lengths = {};
+    ro.forEach(
+        (r) =>
+            (lengths[r[ROAD_YEAR]] =
+                (lengths[r[ROAD_YEAR]] || 0) + r[ROAD_LENGTH])
+    );
+
+    // 1.c) cummulative lengths
+    let cumLengths = {};
+    for (let i = minYear; i <= maxYear; i++) {
+        cumLengths[i] = (lengths[i] || 0) + (cumLengths[i - 1] || 0);
+    }
+
+    let data = {};
+    Object.keys(cumLengths).forEach(
+        (k) => (data[k] = { cumLength: cumLengths[k] })
+    );
+    yearData.forEach(([year, count]) => (data[year].accidents = count));
+
+    const finalData = Object.keys(data).map((k) => {
+        let entries = data[k];
+        entries.accidents = entries.accidents || 0;
+        entries.year = k;
+        return entries;
+    });
+    console.log({finalData})
+    lineAccidentsCum.update(finalData, "year", "accidents", "cumLength");
+
+    // 1.5) update line chart description
+    const lpBefore = `
+        The evolution of accidents and the total length of bike roads
+        during the selected year span is as follows (left axis and lineplot
+        denote accidents counts in a particular year, right axis and shaded
+        area is the cummulative, i.e. total, length of bike roads at any
+        given year).`;
+    document.getElementById("lineChart--before").innerHTML = lpBefore;
+    const lpAfter = `
+        (Note that while the accidents count is incresing, it is not
+        possible to deduce anything as during these years, the total
+        number of bikers increased as well.).`;
+    document.getElementById("lineChart--after").innerHTML = lpAfter;
+
     // 2) some text within, like about sex and stuff
     // 3) ...
-}
+};
 
 /**
  * Initialize the scene.
@@ -215,7 +295,6 @@ const updateText = () => {
  * @todo loading bar? https://loading.io/progress/
  */
 const initialize = async (use_clusters = false) => {
-
     // first, mark the root as loading (to display a nice animation :P )
     document.documentElement.classList.add("loading");
 
@@ -235,7 +314,11 @@ const initialize = async (use_clusters = false) => {
     roadsPolylines = initAllRoads(roads);
     filteredRoads = roads.map((r) => ({ is_loaded: true }));
 
-    // initialize the slider on the map (for years)
+    // create the graphs..
+    const margin = { top: 20, right: 20, bottom: 20, left: 50 };
+    lineAccidentsCum = new LinePlotAccidents(500, 500, margin, "#linechart");
+
+    // initialize the slider on the map (for years) [needs graphs]
     loadingWhat.innerHTML = "precomputing stuff";
     const [minYear, maxYear] = minMaxYear(roads);
     initializeSlider(minYear, maxYear, rangeUpdateCallback);
@@ -261,7 +344,7 @@ const initialize = async (use_clusters = false) => {
         markRoads();
         resetMap(map);
         unselectForm.classList.add(unselectHidden);
-        updateDescription();
+        updateText();
     });
 
     // when the map gets resized, redraw accidents (potentially use clusters)
@@ -283,7 +366,6 @@ const initialize = async (use_clusters = false) => {
     // donut.update(donutData, donutAttr);
 
     // sample visualisation - TODO: remove
-    const margin = { top: 20, right: 20, bottom: 20, left: 50 };
 
     const bp = new BarPlotSwitchable(460, 400, margin, "#age");
     bp.update(donutData, donutAttr);
@@ -295,7 +377,7 @@ const initialize = async (use_clusters = false) => {
         randomI = !randomI;
     };
 
-    const line = new LinePlotAccidents(500, 500, margin, "#linechart");
+    // lineAccidentsCum = new LinePlotAccidents(500, 500, margin, "#linechart");
     var data1 = [
         { ser1: 0.3, ser2: 4, cum: 1 },
         { ser1: 2, ser2: 16, cum: 3 },
@@ -307,7 +389,7 @@ const initialize = async (use_clusters = false) => {
         { ser1: 4, ser2: 1, cum: 7 },
         { ser1: 6, ser2: 8, cum: 7.5 },
     ];
-    line.update(data1);
+    // lineAccidentsCum.update(data1);
     var one = true;
     const ch = () => {
         line.update(one ? data2 : data1);

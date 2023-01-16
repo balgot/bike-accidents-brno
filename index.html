@@ -33,25 +33,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
         integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <style>
-        /* ??? */
-        g {
-            width: 100%;
-            height: 100%;
-        }
-
-        path.slice {
-            stroke-width: 2px;
-        }
-
-        polyline {
-            opacity: 0.3;
-            stroke: black;
-            stroke-width: 2px;
-            fill: none;
-        }
-    </style>
 </head>
 
 <body>
@@ -59,10 +40,10 @@
         <header class="app__header header">
             <h1 class="header__heading">Bike Accidents in Brno</h1>
             <div class="header__controls">
-                <button id="app_modal__btn" class="app__about header__button modal__button" name="Display information about this page">
+                <button id="app_modal__btn" class="app__about header__button modal__button" name="Display information about this page" title="About Project">
                     About
                 </button>
-                <button id="app__dark_mode" class="header__button app__dark_mode" name="Switch dark mode">
+                <button id="app__dark_mode" class="header__button app__dark_mode" name="Switch dark mode" title="Dark Mode">
                     <i class="fa-solid fa-moon" id="dark_mode__img"></i>
                     <span class="dark_mode__text">Change to dark mode</span>
                 </button>
@@ -215,11 +196,11 @@
                 <div class="filters filters--hidden">
                     <ul class="filters__ul">
                         <li class="filters__li">
-                            <label for="filter__line">Linechart</label>
+                            <label for="filter__line">Distribution</label>
                             <input type="checkbox" name="linechart" id="filter__line" checked />
                         </li>
                         <li class="filters__li">
-                            <label for="filter__age">Age distribution</label>
+                            <label for="filter__age">Age</label>
                             <input type="checkbox" name="age" id="filter__age" checked />
                         </li>
                         <li class="filters__li">
@@ -232,30 +213,21 @@
                 <p id="about_road" class="text__about"></p>
 
                 <div class="text__about linechart">
-                    <p>LineChart</p>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing
-                    elit. Temporibus, natus beatae distinctio possimus
-                    earum ea iusto pariatur rem, ut iure corporis sint
-                    nemo ullam obcaecati debitis rerum odio quas sequi!7
-                    <div id="linechart"></div>
+                    <p id="lineChart--before"></p>
+                    <div id="linechart" class="graph"></div>
+                    <p id="lineChart--after"></p>
                 </div>
 
                 <div class="text__about age">
-                    <p>Age</p>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing
-                    elit. Temporibus, natus beatae distinctio possimus
-                    earum ea iusto pariatur rem, ut iure corporis sint
-                    nemo ullam obcaecati debitis rerum odio quas sequi!
-                    <div id="age"></div>
+                    <p id="age--before"></p>
+                    <div id="age" class="graph"></div>
+                    <p id="age--after"></p>
                 </div>
 
                 <div class="text__about sex">
-                    <p>Sex</p>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing
-                    elit. Temporibus, natus beatae distinctio possimus
-                    earum ea iusto pariatur rem, ut iure corporis sint
-                    nemo ullam obcaecati debitis rerum odio quas sequi!
-                    <div id="sex"></div>
+                    <p id="sex--before"></p>
+                    <div id="sex" class="graph"></div>
+                    <p id="sex--after"></p>
                 </div>
             </section>
         </main>
