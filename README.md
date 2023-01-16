@@ -8,12 +8,20 @@ This project represents the final visualisation project from the subject
 `FI:PV251` at _Faculty of Informatics, Masaryk University_ (autumn 2022).
 
 
+## Images
+
+![Loading Screen](assets/desktop__loading--dark.JPG)
+![Ready](assets/desktop__ready--dark.JPG)
+![After zoom](assets/desktop__ready--zoom.JPG)
+
+
 ## Data
 
 The presented data are accessible at [Brno public data](https://data.brno.cz/):
 
 * accidents [here](https://data.brno.cz/datasets/mestobrno::cyklistick%C3%A9-nehody-bike-accidents/about)
 * the cycling roads [here](https://data.brno.cz/datasets/mestobrno::cykloopat%C5%99en%C3%AD-zrealizovan%C3%A1-cycling-infrastructure-existing/about)
+
 
 ## Other sources
 
@@ -25,9 +33,3 @@ CSS animations:
 
 JavaScript functionality inspirations:
 * [range slider](https://w3collective.com/double-range-slider-html-css-js/)
-
-
-## TODO
-
--  create interactive web page
--  inset images into description
