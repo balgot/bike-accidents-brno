@@ -31,7 +31,6 @@ filterInputs.forEach((input) => {
         const show = input.checked;
         const name = input.name;
         const section = document.querySelector(`.text .${name}`);
-        console.log(section);
         section.style.display = show ? "block" : "none";
     });
 });

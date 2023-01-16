@@ -1,4 +1,6 @@
 /* loading part from: https://codepen.io/thetallweeks/pen/yybGra */
+/* bike part from: https://codepen.io/lucawater/pen/VwQVyj */
+
 .preloader .loading {
     font-size: var(--size-font-big);
 }
@@ -9,7 +11,8 @@
     vertical-align: bottom;
     -webkit-animation: ellipsis steps(4, end) 900ms infinite;
     animation: ellipsis steps(4, end) 900ms infinite;
-    content: "\2026"; /* ascii code for the ellipsis character */
+    content: "\2026";
+    /* ascii code for the ellipsis character */
     width: 0px;
 }
 
@@ -32,7 +35,8 @@
     flex-direction: column-reverse;
     align-items: center;
     justify-content: center;
-    flex-grow: 2;  /* take as much space as possible */
+    flex-grow: 2;
+    /* take as much space as possible */
 }
 
 .preloader .bike {
@@ -166,21 +170,27 @@
 .preloader .wheel .spoke:nth-child(2) {
     transform: rotate(30deg);
 }
+
 .preloader .wheel .spoke:nth-child(3) {
     transform: rotate(60deg);
 }
+
 .preloader .wheel .spoke:nth-child(4) {
     transform: rotate(90deg);
 }
+
 .preloader .wheel .spoke:nth-child(5) {
     transform: rotate(120deg);
 }
+
 .preloader .wheel .spoke:nth-child(6) {
     transform: rotate(150deg);
 }
+
 .preloader .wheel .spoke:nth-child(7) {
     transform: rotate(180deg);
 }
+
 .preloader .wheel .spoke:nth-child(8) {
     transform: rotate(210deg);
 }
@@ -257,6 +267,7 @@
     margin-left: 3.5px;
     margin-top: 2.4px;
 }
+
 .preloader .outside {
     width: 80px;
     height: 80px;
@@ -265,6 +276,7 @@
     border: 5px solid var(--bike-black);
     border-radius: 100%;
 }
+
 .preloader .pedalstem {
     width: 12px;
     height: 80px;
@@ -274,13 +286,16 @@
 
     transform-origin: 6px 7px;
 }
+
 .preloader .pedalstem.front {
     animation: pedalstem-front var(--time-pedals) linear infinite;
 }
+
 .preloader .pedalstem.back {
     transform: rotate(180deg);
     animation: pedalstem-back var(--time-pedals) linear infinite;
 }
+
 .preloader .pedalbase {
     width: 40px;
     height: 15px;
@@ -289,9 +304,11 @@
     background: black;
     border: 2px solid var(--tdf-yellow);
 }
+
 .preloader .pedalbase.front {
     animation: pedalbase-front var(--time-pedals) linear infinite;
 }
+
 .preloader .pedalbase.back {
     animation: pedalbase-back var(--time-pedals) linear infinite;
 }
@@ -299,27 +316,35 @@
 .preloader .inside {
     z-index: 6;
 }
+
 .preloader .axis {
     z-index: 5;
 }
+
 .preloader .pedalstem.front {
     z-index: 5;
 }
+
 .preloader .frame {
     z-index: 4;
 }
+
 .preloader .outside {
     z-index: 4;
 }
+
 .preloader .handlebar {
     z-index: 3;
 }
+
 .preloader .sit-here {
     z-index: 2;
 }
+
 .preloader .wheel {
     z-index: 1;
 }
+
 .preloader .pedalstem.back {
     z-index: 0;
 }
@@ -328,6 +353,7 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -337,6 +363,7 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -346,6 +373,7 @@
     from {
         transform: rotate(-180deg);
     }
+
     to {
         transform: rotate(180deg);
     }

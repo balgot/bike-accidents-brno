@@ -19,6 +19,13 @@ The presented data are accessible at [Brno public data](https://data.brno.cz/):
 
 Amazing vizualisation also at [https://storymaps.arcgis.com/stories/ac4013968cc64728b5663b375f7a372c](https://storymaps.arcgis.com/stories/ac4013968cc64728b5663b375f7a372c).
 
+CSS animations:
+* [loading text](https://codepen.io/thetallweeks/pen/yybGra)
+* [bike](https://codepen.io/lucawater/pen/VwQVyj)
+
+JavaScript functionality inspirations:
+* [range slider](https://w3collective.com/double-range-slider-html-css-js/)
+
 
 ## TODO
 

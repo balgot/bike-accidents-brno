@@ -61,7 +61,7 @@ class BarPlotSwitchable {
      * @param {*} data
      * @param {String} attr
      */
-    update(data, attr, callback = (...args) => console.log(args)) {
+    update(data, attr, callback = (...args) => null) {
         const counts = this.findCounts(data.map(d => d[attr]));
 
         // Update the X axis

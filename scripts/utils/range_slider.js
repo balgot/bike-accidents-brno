@@ -31,7 +31,6 @@ const rangeUpdate = (a, b) => {
 };
 
 const rangeChange = (a, b, callback) => {
-    console.log("rangeChange");
     const [min, max] = rangeUpdate(a, b);
     callback(min, max);
 };

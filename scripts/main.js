@@ -166,7 +166,6 @@ const describeBrno = () => {
         .filter((v) => v == true);
     const roadsTotal = _r.length;
     const minYear = +minYearSpan.innerHTML;
-    console.log({ minYear });
     const roadsBuild = _r.filter(
         (v, idx) => roads[idx][ROAD_YEAR] >= minYear
     ).length;
@@ -211,9 +210,13 @@ findCounts = (values) => {
     ]);
 };
 
+/**
+ * Update the part of the screen that displays the whole text.
+ *
+ * Update the description of the place, all texts and graphs.
+ */
 const updateText = () => {
-    // first decide on the generic Brno description or describe the selected
-    // road...
+    // first decide (Brno description, road description)
     updateDescription();
 
     // then update each chart, namely:
@@ -261,7 +264,6 @@ const updateText = () => {
         entries.year = k;
         return entries;
     });
-    console.log({finalData})
     gLineAccidentsCum.update(finalData, "year", "accidents", "cumLength");
 
     // 1.5) update line chart description
@@ -284,7 +286,7 @@ const updateText = () => {
     gSex.update(attribs.filter(a => a[ACC_BIKER_SEX]), ACC_BIKER_SEX);
     gAge.update(attribs.filter(a => a[ACC_BIKER_AGE]), ACC_BIKER_AGE);
 
-    if (acc) {
+    if (attribs.length) {
         document.getElementById("month--before").innerHTML = `
             The months in which the accident happened across all
             years (note the difference summer - winter).
@@ -297,7 +299,7 @@ const updateText = () => {
             The age distribution:
         `;
     } else {
-        for (const _id in ["month--before", "sex--before", "age--before"]) {
+        for (const _id of ["month--before", "sex--before", "age--before"]) {
             document.getElementById(_id).innerHTML = "No accidents to show";
         }
     }

@@ -34,7 +34,7 @@ class DonutChart {
     }
 
     // callback accepts the clicked key and bool whether clicked/unclicked
-    update(data, attribute, callback = (a, b) => console.log(a, b)) {
+    update(data, attribute, callback = (a, b) => null) {
         const entries = data.map((e) => e[attribute]);
         const differentValues = new Set(entries);
         const counts = this.findCounts(entries);
@@ -55,7 +55,6 @@ class DonutChart {
             .sort(null) // Do not sort group by size
             .value((d) => d[1]);
         const data_ready = pie(counts);
-        console.log({data_ready, counts, entries})
 
         // The arc generator
         const arc = d3

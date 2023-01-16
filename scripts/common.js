@@ -65,7 +65,6 @@ const getAddress = (lattitude, longitude) => {
     return fetch(url, { headers })
         .then((res) => res.json())
         .then((res) => {
-            console.log("getAddress", res);
             const street = res.address?.road || "";
             const suburb = res.address?.suburb || "";
             const city = res.address?.city || "";

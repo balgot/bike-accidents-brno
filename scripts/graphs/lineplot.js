@@ -66,10 +66,9 @@ class LinePlotAccidents {
 
         // accidents - line plot
         const nonZeroIdx = data.findIndex(e => e["accidents"] > 0);
-        console.log({nonZeroIdx, data})
         const u = this.svg
             .selectAll(".line__point")
-            .data([data.filter((_, i) => i >= nonZeroIdx)], (d) => d[x]);
+            .data([data.filter((_, i) => i >= nonZeroIdx && nonZeroIdx >= 0)], (d) => d[x]);
 
         // Updata the line
         u.enter()
