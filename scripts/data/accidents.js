@@ -14,6 +14,7 @@ const ACC_BIKER_HELMET = "ozn_osoba";
 const ACC_BIKER_DRUNK = "alkohol";
 const ACC_BIKER_AGE = "vek_skupina";
 const ACC_YEAR = "rok";
+const ACC_MONTH = "mesic";
 // ... todo: add more relevant fields
 
 

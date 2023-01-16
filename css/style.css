@@ -574,12 +574,15 @@ a:visited {
     display: flex;
     justify-content: space-evenly;
     flex-wrap: wrap;
+    flex-direction: column;
+    align-content: center;
 }
 
 .filters__li {
     display: flex;
-    flex-direction: row-reverse;
     column-gap: .3em;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
 }
 
 /*******************************************************************************

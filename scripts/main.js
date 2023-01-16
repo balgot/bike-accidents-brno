@@ -35,7 +35,10 @@ var accidentsMarkers; // markers for each accident, have same length
 var bikeRoadsAccidents;
 
 // graphs
-var lineAccidentsCum;
+var gLineAccidentsCum;
+var gMonth;
+var gSex;
+var gAge;
 var minYear = 0,
     maxYear = 3000;
 
@@ -101,7 +104,6 @@ const roadClick = (event, data, idx) => {
 
     // update the global vars related to the current selection
     selectedRoadIdx = idx;
-    // filteredAccidents = bikeRoadsAccidents[idx]; // TODO: this is wrong
 
     // zoom in to the segments (on the whole road)
     let bounds = L.latLngBounds();
@@ -129,7 +131,6 @@ const roadClick = (event, data, idx) => {
  * @param {Number} min min year to use
  * @param {Number} max max year to display
  * @returns nothing
- * @todo implement
  */
 const rangeUpdateCallback = (min, max) => {
     // first update the information on the info-panel
@@ -199,7 +200,6 @@ const updateDescription = () => {
     }
 };
 
-/* TODO: remove from here */
 findCounts = (values) => {
     const occurrences = values.reduce(
         (acc, curr) => (acc[curr] ? ++acc[curr] : (acc[curr] = 1), acc),
@@ -211,7 +211,6 @@ findCounts = (values) => {
     ]);
 };
 
-/* TODO */
 const updateText = () => {
     // first decide on the generic Brno description or describe the selected
     // road...
@@ -263,7 +262,7 @@ const updateText = () => {
         return entries;
     });
     console.log({finalData})
-    lineAccidentsCum.update(finalData, "year", "accidents", "cumLength");
+    gLineAccidentsCum.update(finalData, "year", "accidents", "cumLength");
 
     // 1.5) update line chart description
     const lpBefore = `
@@ -279,8 +278,29 @@ const updateText = () => {
         number of bikers increased as well.).`;
     document.getElementById("lineChart--after").innerHTML = lpAfter;
 
-    // 2) some text within, like about sex and stuff
-    // 3) ...
+    // 2) update other graphs
+    const attribs = acc.map(a => a.attributes);
+    gMonth.update(attribs, ACC_MONTH);
+    gSex.update(attribs.filter(a => a[ACC_BIKER_SEX]), ACC_BIKER_SEX);
+    gAge.update(attribs.filter(a => a[ACC_BIKER_AGE]), ACC_BIKER_AGE);
+
+    if (acc) {
+        document.getElementById("month--before").innerHTML = `
+            The months in which the accident happened across all
+            years (note the difference summer - winter).
+        `;
+        document.getElementById("sex--before").innerHTML = `
+            The distribution of sex (only records with valid value
+            are displayed).
+        `;
+        document.getElementById("age--before").innerHTML = `
+            The age distribution:
+        `;
+    } else {
+        for (const _id in ["month--before", "sex--before", "age--before"]) {
+            document.getElementById(_id).innerHTML = "No accidents to show";
+        }
+    }
 };
 
 /**
@@ -291,8 +311,7 @@ const updateText = () => {
  *
  * @param {Boolean} use_clusters (ignored)
  * @returns nothing
- * @todo clusters when zooming in...
- * @todo loading bar? https://loading.io/progress/
+ * @idea loading bar? https://loading.io/progress/
  */
 const initialize = async (use_clusters = false) => {
     // first, mark the root as loading (to display a nice animation :P )
@@ -316,7 +335,14 @@ const initialize = async (use_clusters = false) => {
 
     // create the graphs..
     const margin = { top: 20, right: 20, bottom: 20, left: 50 };
-    lineAccidentsCum = new LinePlotAccidents(500, 500, margin, "#linechart");
+    gLineAccidentsCum = new LinePlotAccidents(500, 500, margin, "#linechart");
+    gMonth = new BarPlotSwitchable(500, 500, margin, "#month");
+    gAge = new BarPlotSwitchable(500, 500, margin, "#age", (a, b) => {
+        const _a = +a[0].match(/\b\d+/)[0];
+        const _b = +b[0].match(/\b\d+/)[0];
+        return _a - _b;
+    });
+    gSex = new DonutChart(500, 500, margin.left, "#sex");
 
     // initialize the slider on the map (for years) [needs graphs]
     loadingWhat.innerHTML = "precomputing stuff";
@@ -355,46 +381,6 @@ const initialize = async (use_clusters = false) => {
     console.log("Finished all loading");
     document.documentElement.classList.remove("loading");
     document.documentElement.classList.add("ready");
-
-    // DEMO stuff
-    const donut = new DonutChart(500, 500, 100, "#sex");
-    const ddData = accidents.map((a) => ({
-        what: a.attributes[ACC_DESCRIPTION],
-    }));
-    console.log(ddData);
-    donut.update(ddData, "what");
-    // donut.update(donutData, donutAttr);
-
-    // sample visualisation - TODO: remove
-
-    const bp = new BarPlotSwitchable(460, 400, margin, "#age");
-    bp.update(donutData, donutAttr);
-
-    var randomI = true;
-    const change = () => {
-        // donut.update(randomI ? donutDataB : donutData, donutAttr);
-        bp.update(randomI ? donutDataB : donutData, donutAttr);
-        randomI = !randomI;
-    };
-
-    // lineAccidentsCum = new LinePlotAccidents(500, 500, margin, "#linechart");
-    var data1 = [
-        { ser1: 0.3, ser2: 4, cum: 1 },
-        { ser1: 2, ser2: 16, cum: 3 },
-        { ser1: 3, ser2: 8, cum: 10 },
-    ];
-
-    var data2 = [
-        { ser1: 1, ser2: 7, cum: 5 },
-        { ser1: 4, ser2: 1, cum: 7 },
-        { ser1: 6, ser2: 8, cum: 7.5 },
-    ];
-    // lineAccidentsCum.update(data1);
-    var one = true;
-    const ch = () => {
-        line.update(one ? data2 : data1);
-        one = !one;
-    };
 };
 
 /******************************************************************************

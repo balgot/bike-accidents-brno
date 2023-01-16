@@ -1,9 +1,10 @@
 /** https://d3-graph-gallery.com/graph/barplot_button_data_hard.html */
 class BarPlotSwitchable {
-    constructor(width, height, margin, where) {
+    constructor(width, height, margin, where, sortFn = null) {
         this.margin = margin;
         this.width = width - margin.left - margin.right;
         this.height = height - margin.top - margin.bottom;
+        this.sortFn = sortFn;
 
         // ...
         const usedWidth = width + margin.left + margin.right;
@@ -47,10 +48,11 @@ class BarPlotSwitchable {
             (acc, curr) => (acc[curr] ? ++acc[curr] : (acc[curr] = 1), acc),
             {}
         ); // what: how many
-        return Object.keys(occurrences).map((key) => [
-            Number(key),
+        const res = Object.keys(occurrences).map((key) => [
+            key,
             occurrences[key],
         ]);
+        return this.sortFn == null ? res : res.sort(this.sortFn);
     }
 
     /**
