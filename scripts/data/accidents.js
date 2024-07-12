@@ -1,7 +1,7 @@
 /** loading and manipulation with accidents data **/
 
 // URL to get the data about bike accidents, retrieve all data with all fields
-const BIKE_ACCIDENTS_URL = "https://gis.brno.cz/ags1/rest/services/Hosted/Cyklo_nehody/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json";
+const BIKE_ACCIDENTS_URL = "https://services6.arcgis.com/fUWVlHWZNxUvTUh8/arcgis/rest/services/Cyklistické_nehody/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json";
 
 /** fields present in the data **/
 const ACC_TIMESTAMP = "datum";  // TODO: convert to local GMT for Czech Republic
@@ -12,7 +12,7 @@ const ACC_GEO = "geometry"
 const ACC_BIKER_SEX = "pohlavi";
 const ACC_BIKER_HELMET = "ozn_osoba";
 const ACC_BIKER_DRUNK = "alkohol";
-const ACC_BIKER_AGE = "vek_skupina";
+const ACC_BIKER_AGE = "vek";
 const ACC_YEAR = "rok";
 const ACC_MONTH = "mesic";
 // ... todo: add more relevant fields
